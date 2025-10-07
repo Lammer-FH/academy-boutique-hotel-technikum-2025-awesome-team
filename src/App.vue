@@ -26,6 +26,10 @@ main{
 /* Mobile-first styles (default) */
 #app-container {
   width: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-secondary);
+   font-family: var(--font-paragraph);
 }
 
 /* Tablet and up */

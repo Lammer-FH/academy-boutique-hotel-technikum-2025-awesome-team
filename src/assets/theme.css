@@ -1,0 +1,9 @@
+/* src/assets/theme.css */
+:root {
+    --color-primary: #BF5D24;
+    --color-secondary: #A64521;
+
+    --color-bg: #F2F2F2;
+    --color-text: #59281D;
+    --color-border: #A6281C;
+}

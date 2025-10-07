@@ -18,12 +18,12 @@ export default {
 
 <style scoped>
 header {
-        background-color: lightgray;
+        background-color: var(--color-primary);
   width: 100%;
   position: fixed;
   top: 0;
 z-index: 1;
-border-bottom: solid black;
+
 
 }
 
