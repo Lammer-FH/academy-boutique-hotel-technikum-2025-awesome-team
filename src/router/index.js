@@ -22,7 +22,25 @@ const router = createRouter({
             path: '/impressum',
             name: 'impressum',
             component: ImpressumView
+        },
+
+        {
+        path: '/booking',
+        name: 'booking',
+        component: () => import('../views/BookingView.vue')
+        },
+        {
+        path: '/booking/confirm',
+        name: 'booking-confirm',
+        component: () => import('../views/BookingConfirm.vue')
+        },
+        {
+        path: '/admin/bookings',
+        name: 'admin-bookings',
+        component: () => import('../views/AdminBookings.vue')
         }
+
+
     ]
 })
 
