@@ -1,53 +1,143 @@
 <script>
-import { RouterLink} from 'vue-router'
+import { ref } from 'vue'
+import AuthModal from './AuthModal.vue'
 
 export default {
-  name: 'Header'
+  name: 'Header',
+  components: { AuthModal },
+  setup() {
+    const isUserMenuOpen = ref(false)
+
+    const toggleUserMenu = () => {
+      isUserMenuOpen.value = !isUserMenuOpen.value
+    }
+
+    return { isUserMenuOpen, toggleUserMenu }
+  }
 }
 </script>
 
 <template>
-      <header>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/impressum">Impressum</RouterLink>
-      </nav>
+  <header>
+    <b-navbar toggleable="lg" type="dark" class="modern-navbar">
+      <!-- Brand -->
+      <div class="d-flex align-items-center">
+        <b-navbar-brand href="#">Hotel Name</b-navbar-brand>
+      </div>
+
+      <b-navbar-toggle target="nav-collapse" class="ml-auto"></b-navbar-toggle>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <!-- Main navigation -->
+        <b-navbar-nav class="nav-center">
+          <b-nav-item to="/" tag="router-link" class="nav-animated">Home</b-nav-item>
+          <b-nav-item to="/about" tag="router-link" class="nav-animated">About</b-nav-item>
+          <b-nav-item to="/impressum" tag="router-link" class="nav-animated">Impressum</b-nav-item>
+
+          <!-- User icon opens modal -->
+          <b-nav-item @click="$refs.authModal.showModal = true" class="user-icon nav-animated">
+            <i class="bi bi-person"></i> User
+          </b-nav-item>
+        </b-navbar-nav>
+
+        
+      </b-collapse>
+    </b-navbar>
+
+    <!-- Auth modal -->
+    <AuthModal ref="authModal" />
   </header>
 </template>
 
 <style scoped>
+:root {
+  --color-primary: #BF5D24;
+  --color-secondary: #A64521;
+  --color-bg: #F2F2F2;
+  --color-text: #59281D;
+  --color-border: #A6281C;
+}
+
 header {
-        background-color: var(--color-primary);
   width: 100%;
   position: fixed;
   top: 0;
-z-index: 1;
-
-
+  z-index: 1000;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
+/* Navbar */
+.modern-navbar {
+  background-color: rgba(191, 93, 36, 0.4);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.modern-navbar .navbar-brand,
+.modern-navbar .nav-link,
+.user-icon i {
+  color: white !important;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.nav-animated:hover,
+.user-icon:hover i {
+  color: var(--color-bg) !important;
+  transform: scale(1.15);
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+.nav-animated {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  padding: 0.4rem 0.8rem;
 }
 
-nav a:first-of-type {
-  border: 0;
+.nav-animated:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.user-icon i {
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.user-inline-menu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.5rem;
+}
+
+.user-inline-menu .nav-animated {
+  margin: 0.2rem 0;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  transition: all 0.3s ease;
+  list-style: none;
+}
+
+.user-inline-menu .nav-animated:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-bg) !important;
+}
+
+@media (max-width: 991px) {
+  .nav-center {
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100%;
+  }
+  .nav-center .nav-item {
+    width: 100%;
+    text-align: center;
+  }
+  .user-inline-menu.d-lg-none {
+    align-items: center;
+    margin-left: 0;
+    width: 100%;
+  }
+  .user-icon {
+    margin-right: 0.6rem;
+  }
 }
 </style>
