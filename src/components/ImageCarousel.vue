@@ -22,9 +22,11 @@ export default {
       currentIndex: 0,
       timer: null,
       images: [
-        'public/images/hotel1.jpg',
-        'public/images/hotel2.jpg',
-        'public/images/hotel3.jpg'
+        'public/images/about/lobby1.jpg',
+        'public/images/about/lobby2.jpg',
+        'public/images/about/saal1.jpg',
+        'public/images/about/saal2.jpg',
+        'public/images/about/spa1.jpg'
       ]
     };
   },
@@ -43,7 +45,7 @@ export default {
         (this.currentIndex - 1 + this.images.length) % this.images.length;
     },
     startAutoplay() {
-      this.timer = setInterval(this.next, 3500);
+      this.timer = setInterval(this.next, 4000);
     }
   }
 };

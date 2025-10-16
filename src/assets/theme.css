@@ -1,9 +1,10 @@
 /* src/assets/theme.css */
 :root {
-    --color-primary: #BF5D24;
-    --color-secondary: #A64521;
+    --color-primary: #BF9773;
+    --color-secondary: #9B5A33;
 
-    --color-bg: #F2F2F2;
-    --color-text: #59281D;
-    --color-border: #A6281C;
+    --color-bg1: #CDCBC8;
+    --color-bg2: #C1A7A4;
+
+    --color-accent: #43120B;
 }
