@@ -14,11 +14,6 @@ p {
 }
 
 
-@media (hover: hover) {
-    a:hover {
-        background-color: var(--color-primary)
-    }
-}
 
 @media (min-width: 1024px) {
     body {
