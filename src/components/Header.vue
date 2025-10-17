@@ -22,7 +22,7 @@ export default {
     <b-navbar toggleable="lg" type="dark" class="modern-navbar">
       <!-- Brand -->
       <div class="d-flex align-items-center">
-        <b-navbar-brand href="#">Hotel Name</b-navbar-brand>
+        <b-navbar-brand href="#">Hotel Vue</b-navbar-brand>
       </div>
 
       <b-navbar-toggle target="nav-collapse" class="ml-auto"></b-navbar-toggle>
@@ -50,14 +50,6 @@ export default {
 </template>
 
 <style scoped>
-:root {
-  --color-primary: #BF5D24;
-  --color-secondary: #A64521;
-  --color-bg: #F2F2F2;
-  --color-text: #59281D;
-  --color-border: #A6281C;
-}
-
 header {
   width: 100%;
   position: fixed;

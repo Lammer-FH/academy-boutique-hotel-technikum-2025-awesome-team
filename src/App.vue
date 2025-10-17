@@ -5,7 +5,7 @@ import Footer from './components/Footer.vue'
 </script>
 
 <template>
-<div id="app-container">
+
   <Header/>
 
 <main>
@@ -13,7 +13,7 @@ import Footer from './components/Footer.vue'
 </main>
 
   <Footer />
-</div>
+
 </template>
 
 <style scoped>
@@ -21,20 +21,13 @@ main{
     width: 100%;
     margin-bottom: 10vh;
     padding: 1rem;
-}
-
-/* Mobile-first styles (default) */
-#app-container {
-  width: 100%;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  border: 1px solid var(--color-secondary);
-   font-family: var(--font-paragraph);
+    margin-top: 10vh;
+    color: var(--color-accent);
 }
 
 /* Tablet and up */
 @media (min-width: 600px) {
-  #app-container {
+  main {
 width: 100%;
     
   }
@@ -42,21 +35,21 @@ width: 100%;
 
 /* Desktop and up */
 @media (min-width: 900px) {
-  #app-container {
+  main {
 width: 100%;
   }
 }
 
 /* Large desktop */
 @media (min-width: 1200px) {
-  #app-container {
-width: 80%;
+  main {
+width: 100%;
   }
 }
 
 /* Extra large desktop */
 @media (min-width: 1800px) {
-  #app-container {
+  main {
 width: 80%;
   }
 }

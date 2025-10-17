@@ -3,12 +3,12 @@
 </script>
 
 <template>
-    <img id="landing-page-img" src="public/images/hotel1.jpg"/>
+    <img id="landing-page-img" src="public/images/about/lobby2.jpg"/>
     <h1>Seit 1492 – Willkommen im Hotel Vue</h1>
 <p>Tradition, Charme und ein Gastgeber, der niemals schläft… nur beim Wein.</p>
 <div>
-    <button>Zimmer buchen</button>
-    <button>Das Hotel entdecken</button>
+    <b-button class="btn">Zimmer buchen</b-button>
+    <b-button class="btn">Das Hotel entdecken</b-button>
 </div>
 </template>
 
@@ -18,7 +18,11 @@
     height: auto;
     display: block;
     margin: 0 auto 1rem;
-    
+}
+
+.btn{
+    background: var(--color-accent);
+    margin: 0 1rem;
 }
 </style>
 

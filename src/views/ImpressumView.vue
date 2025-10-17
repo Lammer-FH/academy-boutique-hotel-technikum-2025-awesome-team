@@ -20,3 +20,4 @@ E-Mail: info@hotel-vue.at
   </div>
 
 </template>
+

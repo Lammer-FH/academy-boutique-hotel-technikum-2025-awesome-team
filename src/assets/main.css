@@ -14,15 +14,14 @@ p {
 }
 
 
-
-@media (min-width: 1024px) {
-    body {
-        display: flex;
-        place-items: center;
-    }
-
-    #app {
-        display: flex;
-        grid-template-columns: 1fr 1fr;
-    }
+body {
+    display: flex;
+    place-items: center;
 }
+
+#app {
+    display: flex;
+    grid-template-columns: 1fr 1fr;
+}
+
+@media (min-width: 1024px) {}

@@ -60,10 +60,6 @@ export default {
 </template>
 
 <style scoped>
-:root {
-  --color-primary: #BF5D24;
-  --color-bg: #F2F2F2;
-}
 
 .modern-footer {
   background-color: rgba(191, 93, 36, 0.4);
