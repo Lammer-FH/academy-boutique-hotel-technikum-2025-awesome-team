@@ -35,7 +35,7 @@ export default {
     class="modern-footer"
     :class="{ 'footer-visible': showFooter }"
   >
-    <p class="text-black text-uppercase fw-bold mb-1 big">© Hotel Name</p>
+    <p class="text-black text-uppercase fw-bold mb-1 big">© Hotel Vue</p>
     <div class="footer-content">
       <p class="mb-1 text-black small">Follow us on:</p>
       <div class="social-icons">
