@@ -6,13 +6,17 @@ import Footer from './components/Footer.vue'
 
 <template>
 
-  <Header/>
+<div class="d-flex flex-column justify-content-center min-vh-100">
+  <Header />
+</div>
 
-<main>
+ <main class="flex-fill container my-4 justify-content-center">
   <RouterView />
 </main>
 
-  <Footer />
+<div class="d-flex flex-column justify-content-center min-vh-100">
+ <Footer />
+</div>
 
 </template>
 
