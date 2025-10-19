@@ -4,7 +4,7 @@ import ImageCarousel from '../components/ImageCarousel.vue';
 
 
 <template>
-  <h1>-</h1>
+  <h1> </h1>
   <div class="about" d-flex justify-content-center>
     
     <ImageCarousel/>

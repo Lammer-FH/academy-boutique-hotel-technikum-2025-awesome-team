@@ -21,7 +21,7 @@ export default {
   <header>
     <b-navbar toggleable="lg" type="dark" class="modern-navbar">
       <!-- Brand -->
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center align-items-stretch">
         <b-navbar-brand href="#">Hotel Vue</b-navbar-brand>
       </div>
 
@@ -85,7 +85,7 @@ header {
 
 .nav-animated:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
 }
 
 .user-icon i {
