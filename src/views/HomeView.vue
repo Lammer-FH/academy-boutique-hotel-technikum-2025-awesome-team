@@ -16,9 +16,11 @@
         <b-button variant="primary" class="btn flex-fill flex-md-grow-0">
           Zimmer buchen
         </b-button>
-        <b-button variant="secondary" class="btn flex-fill flex-md-grow-0">
-          Das Hotel entdecken
-        </b-button>
+         <router-link to="/about">
+          <b-button variant="secondary" class="btn flex-fill flex-md-grow-0">
+            Das Hotel entdecken
+          </b-button>
+        </router-link>
       </div>
     </div>
   </div>
