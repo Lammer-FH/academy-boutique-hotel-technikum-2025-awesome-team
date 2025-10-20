@@ -21,7 +21,18 @@ export default {
   <header>
     <b-navbar toggleable="lg" type="dark" class="modern-navbar">
       <!-- Brand -->
-        <b-navbar-brand href="#" class="d-flex align-items-center align-items-stretch">Hotel Vue</b-navbar-brand>
+      <b-navbar-brand href="#" class="d-flex align-items-center brand">
+      
+        <img
+          src="@/assets/logo-w.png"
+          alt="Vue Hotel Logo"
+          class="logo me-2"
+        />
+        <div class="brand-text">
+          <span class="brand-name">Hotel Vue</span>          
+        </div>
+      </b-navbar-brand>
+
       <b-navbar-toggle target="nav-collapse" class="ml-auto"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
@@ -111,6 +122,9 @@ header {
 }
 
 @media (max-width: 991px) {
+
+  .logo { height: 20px; }
+
   .nav-center {
     justify-content: center !important;
     text-align: center !important;
