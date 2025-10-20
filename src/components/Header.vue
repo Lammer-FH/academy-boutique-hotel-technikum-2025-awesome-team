@@ -21,10 +21,7 @@ export default {
   <header>
     <b-navbar toggleable="lg" type="dark" class="modern-navbar">
       <!-- Brand -->
-      <div class="d-flex align-items-center align-items-stretch">
-        <b-navbar-brand href="#">Hotel Vue</b-navbar-brand>
-      </div>
-
+        <b-navbar-brand href="#" class="d-flex align-items-center align-items-stretch">Hotel Vue</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse" class="ml-auto"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
