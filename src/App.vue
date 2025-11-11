@@ -17,3 +17,9 @@ import Footer from './components/Footer.vue'
 
 </template>
 
+<style>
+.mt-120 {
+  margin-top: 120px;
+}
+</style>
+
