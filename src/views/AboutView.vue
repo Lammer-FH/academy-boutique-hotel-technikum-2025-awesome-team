@@ -33,15 +33,6 @@ Ob Sie auf der Durchreise sind oder einen längeren Aufenthalt planen – bei un
 
 
 <style>
-.btn-primary{
-    background-color: var(--color-primary);
-    border: none;
-      white-space: nowrap;
-}
-
-.btn-primary:hover{
-    background-color: var(--color-primary1);
-}
 
 p {
   font-size: clamp(1rem, 1.2vw, 1.2rem); 
