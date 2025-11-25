@@ -39,6 +39,7 @@ export default {
         <!-- Main navigation -->
         <b-navbar-nav class="nav-center">
           <b-nav-item to="/" tag="router-link" class="nav-animated">Home</b-nav-item>
+          <b-nav-item to="/rooms" tag="router-link" class="nav-animated">Rooms</b-nav-item>
           <b-nav-item to="/about" tag="router-link" class="nav-animated">About</b-nav-item>
           <b-nav-item to="/impressum" tag="router-link" class="nav-animated">Impressum</b-nav-item>
 
