@@ -20,7 +20,11 @@ Ob Sie auf der Durchreise sind oder einen längeren Aufenthalt planen – bei un
 <p>Erfrischen Sie sich an unserer renommierten <b>Juice Bar</b>, stöbern Sie verloren geglaubte Schmöker in unserer <b>Bibliothek</b> auf, entdecken Sie feinste Jahrgänge in unserer gut sortierten <b>Vinothek</b> und entpannen Sie danach in unserer patentierten <b><i>garlic sauna</i></b>... </p> 
 <p>Vlad und das <b>Hotel Vue</b> erwarten Sie!</p>
 <div class="text-center mt-4">
-          <b-button variant="primary" class="btn-text-fit">Zimmer buchen</b-button>
+          <router-link to="/rooms">
+        <b-button variant="primary" class="btn flex-fill flex-md-grow-0">
+          Zimmer buchen
+        </b-button>
+        </router-link>
         </div>
       </b-col>
     </b-row>
@@ -29,15 +33,6 @@ Ob Sie auf der Durchreise sind oder einen längeren Aufenthalt planen – bei un
 
 
 <style>
-.btn-primary{
-    background-color: var(--color-primary);
-    border: none;
-      white-space: nowrap;
-}
-
-.btn-primary:hover{
-    background-color: var(--color-primary1);
-}
 
 p {
   font-size: clamp(1rem, 1.2vw, 1.2rem); 

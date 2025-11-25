@@ -28,9 +28,7 @@ export default {
           alt="Vue Hotel Logo"
           class="logo me-2"
         />
-        <div class="brand-text">
-          <span class="brand-name">Hotel Vue</span>          
-        </div>
+        
       </b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse" class="ml-auto"></b-navbar-toggle>
