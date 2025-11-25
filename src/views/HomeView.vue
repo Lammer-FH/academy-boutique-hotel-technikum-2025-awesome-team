@@ -13,9 +13,11 @@
         Tradition, Charme und ein Gastgeber, der niemals schläft…
       </p>
       <div class="d-flex flex-wrap justify-content-center gap-2 w-100 px-3">
+         <router-link to="/rooms">
         <b-button variant="primary" class="btn flex-fill flex-md-grow-0">
           Zimmer buchen
         </b-button>
+        </router-link>
          <router-link to="/about">
           <b-button variant="secondary" class="btn flex-fill flex-md-grow-0">
             Das Hotel entdecken
