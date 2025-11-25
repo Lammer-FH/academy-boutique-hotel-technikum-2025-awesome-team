@@ -31,7 +31,7 @@ const router = createRouter({
             name: 'impressum',
             component: ImpressumView
         }
-        
+
     ]
 })
 
