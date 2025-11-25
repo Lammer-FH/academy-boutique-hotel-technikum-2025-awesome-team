@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="title-container position-relative text-center mt-120">
+  <div class="title-container position-relative text-center">
     <img class="title-img img-fluid" src="/images/about/lobby2.jpg" alt="Hotel Lobby" />
 
     <div class="title-text text-white d-flex flex-column align-items-center justify-content-center">

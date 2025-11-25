@@ -18,8 +18,8 @@ import Footer from './components/Footer.vue'
 </template>
 
 <style>
-.mt-120 {
-  margin-top: 120px;
+.mt-100 {
+  margin-top: 100px;
 }
 
 .btn-primary{

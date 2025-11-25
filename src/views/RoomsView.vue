@@ -1,5 +1,5 @@
 <template>
-  <b-container class="rooms-view mt-120 mb-5">
+  <b-container class="rooms-view mt-100 mb-5">
     <h2 class="text-center mb-4">Unsere Zimmer</h2>
 
     <p>Wählen Sie hier Ihre Ruhestätte...</p>
@@ -173,7 +173,7 @@ const checkAllAvailability = async () => {
   }
 }
 
-//Datumsformat anpassen (11-11-25)
+//Datumsformat anpassen (15-11-25)
 const formatDate = (date) => {
   const d = new Date(date)
   const day = String(d.getDate()).padStart(2, "0")
