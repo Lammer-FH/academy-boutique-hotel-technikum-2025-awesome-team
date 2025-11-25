@@ -20,8 +20,6 @@ const router = createRouter({
             component: () => import('../views/AboutView.vue')
         },
         {
-<<<<<<< master
-=======
             path: '/rooms',
             name: 'rooms',
             // route level code-splitting
@@ -38,7 +36,6 @@ const router = createRouter({
             component: () => import('../views/BookingView.vue')
         },
         {
->>>>>>> local
             path: '/impressum',
             name: 'impressum',
             component: ImpressumView

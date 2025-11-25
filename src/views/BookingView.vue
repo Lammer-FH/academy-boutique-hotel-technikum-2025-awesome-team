@@ -108,6 +108,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
 
 const route = useRoute()
 const router = useRouter()
@@ -163,11 +164,6 @@ onMounted(async () => {
 
 // Submit booking
 const submitBooking = async () => {
-  if (!fromDate || !toDate) {
-    alert("Bitte wählen Sie An- und Abreisedatum!")
-    return
-  }
-
   posting.value = true
   try {
     const res = await fetch(
