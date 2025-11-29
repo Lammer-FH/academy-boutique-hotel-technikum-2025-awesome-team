@@ -18,8 +18,9 @@ import Footer from './components/Footer.vue'
 </template>
 
 <style>
-.mt-100 {
-  margin-top: 100px;
+.mt-120 {
+  margin-top: 120px;
+  margin-bottom: 120px;
 }
 
 .btn-primary{
@@ -47,35 +48,87 @@ import Footer from './components/Footer.vue'
 }
 
 .primary-bar {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary1);
   border-radius: 12px;
+  padding: 12px 20px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.btn-disabled{
+   background-color: var(--color-bg1) !important;
+  border-color: var(--color-bg1) !important;
+  color: #999 !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+.check-btn {
+  background-color: var(--color-primary);
+  border: none;
+  color: #fff;
+  padding: 8px 18px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: 0.2s ease; 
+}
+
+.check-btn:hover {
+  background-color: var(--color-secondary);
   color: #fff;
 }
 
-.primary-bar .check-btn {
-  background-color: #fff;
-  color: var(--color-primary);
-  border: none;
+.pagination {
+  --bs-pagination-font-size: 0.9rem;
+  --bs-pagination-border-radius: 8px;
+  --bs-pagination-padding-x: 0.75rem;
+  --bs-pagination-padding-y: 0.45rem;
+}
+
+.primary-bar .pagination .check-btn {
+  display: flex;
+  align-items: center;
+  margin: 0 !important;
+}
+
+.page-item .page-link {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-primary1);
+  color: var(--color-text);
+  transition: 0.2s ease;
+  border-radius: 6px !important;
+}
+
+.page-item .page-link:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.page-item.active .page-link {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
   font-weight: 600;
 }
 
-.primary-bar .check-btn:hover {
-  background-color: var(--color-primary1);
-  color: #fff;
+.page-item.disabled .page-link {
+  background-color: var(--color-bg1);
+  border-color: var(--color-bg1);
+  color: #999;
 }
 
-/* Pagination in der Leiste */
-:deep(.primary-bar .pagination .page-link) {
-  background-color: #fff;
-  color: var(--color-primary);
-  border: none;
-  font-weight: 500;
+.room-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
 }
 
-:deep(.primary-bar .pagination .active .page-link),
-:deep(.primary-bar .pagination .page-link:hover) {
-  background-color: var(--color-primary1);
-  color: #fff;
+.room-content {
+  flex: 1;       
+}
+
+.room-button {  
+  margin-top: auto;
 }
 
 </style>
