@@ -1,5 +1,25 @@
 <template>
   <b-form>
+    <!-- Booking Dates -->
+    <b-form-group label="Ausgewählter Zeitraum:">
+      <div class="d-flex align-items-center gap-2">
+        <b-form-input
+          type="date"
+          v-model="localDateFrom"
+          class="w-auto"
+          @input="validateNewFromDate($event)"
+        />
+        <span>bis</span>
+        <b-form-input
+          type="date"
+          v-model="localDateTo"
+          class="w-auto"
+          @input="validateNewToDate($event)"
+        />
+      </div>
+    </b-form-group>
+
+    <!-- User Info -->
     <b-form-group label="Vorname:">
       <b-form-input
         :value="firstName"
@@ -33,6 +53,8 @@
         required
       />
     </b-form-group>
+
+    <!-- Breakfast Option -->
     <b-form-group>
       <b-form-checkbox
         :checked="fruehstueck"
@@ -40,19 +62,23 @@
       >
         Frühstück hinzufügen{{ fruehstueck ? ' (Ja)' : ' (Nein)' }}
       </b-form-checkbox>
-      </b-form-group>
+    </b-form-group>
   </b-form>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   firstName: String,
   lastName: String,
   email: String,
   dob: String,
-  fruehstueck: Boolean
+  fruehstueck: Boolean,
+  dateFrom: String,
+  dateTo: String,
+  roomId: String
 })
 
 const emit = defineEmits([
@@ -61,5 +87,85 @@ const emit = defineEmits([
   "update:email",
   "update:dob",
   "update:fruehstueck",
+  "update:dateFrom",
+  "update:dateTo"
 ])
+
+const router = useRouter()
+
+// Local reactive dates
+const localDateFrom = ref(props.dateFrom)
+const localDateTo = ref(props.dateTo)
+
+// Keep last valid dates
+const lastValidFrom = ref(props.dateFrom)
+const lastValidTo = ref(props.dateTo)
+
+// Sync local → parent
+watch(localDateFrom, val => emit("update:dateFrom", val))
+watch(localDateTo, val => emit("update:dateTo", val))
+
+// Sync parent → local
+watch(() => props.dateFrom, val => { localDateFrom.value = val; lastValidFrom.value = val })
+watch(() => props.dateTo, val => { localDateTo.value = val; lastValidTo.value = val })
+
+
+// Check room availability
+async function isRoomAvailable(from, to) {
+  try {
+    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${props.roomId}/from/${from}/to/${to}`
+    const res = await fetch(url)
+    const data = await res.json()
+    return data.available
+  } catch (err) {
+    console.error("Fehler beim Prüfen der Verfügbarkeit", err)
+    return false
+  }
+}
+
+// Validate new from date
+async function validateNewFromDate(newDate) {
+    if (newDate > localDateTo.value) {
+    alert("Anreisedatum darf nicht nach dem Abreisedatum liegen.")
+    localDateFrom.value = lastValidFrom.value
+    return
+  }
+  const available = await isRoomAvailable(newDate, localDateTo.value)
+  if (!available) {
+    alert("Zimmer ist an diesem Datum nicht verfügbar.")
+    localDateFrom.value = lastValidFrom.value
+    return
+  }
+  localDateFrom.value = newDate
+  lastValidFrom.value = newDate
+  updateUrl()
+}
+
+// Validate new to date
+async function validateNewToDate(newDate) {
+     if (newDate < localDateFrom.value) {
+    alert("Abreisedatum darf nicht vor dem Anreisedatum liegen.")
+    localDateTo.value = lastValidTo.value
+    return
+  }
+  const available = await isRoomAvailable(localDateFrom.value, newDate)
+  if (!available) {
+    alert("Zimmer ist an diesem Datum nicht verfügbar.")
+    localDateTo.value = lastValidTo.value
+    return
+  }
+  localDateTo.value = newDate
+  lastValidTo.value = newDate
+    updateUrl()
+}
+// Update URL query params
+function updateUrl() {
+  router.replace({
+    query: {
+      ...router.currentRoute.value.query,
+      from: localDateFrom.value,
+      to: localDateTo.value
+    }
+  })
+}
 </script>

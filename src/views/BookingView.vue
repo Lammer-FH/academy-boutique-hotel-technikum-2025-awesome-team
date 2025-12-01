@@ -17,50 +17,44 @@
         <b-col cols="12" style="max-width: 900px;">
 
           <!-- Room Card -->
-          <b-card class="shadow-sm">
-            <b-row no-gutters>
+<b-card class="shadow-sm">
+  <b-row no-gutters>
+    
+    <!-- Image: full width on mobile, 1/3 on md+ -->
+    <b-col cols="12" md="4">
+      <b-card-img
+        :src="`/images/rooms/${room.id}.jpg`"
+        alt="Zimmerbild"
+        class="h-100"
+      />
+    </b-col>
 
-              <!-- Left Image -->
-              <b-col cols="4">
-                <b-card-img
-                  :src="`/images/rooms/${room.id}.jpg`"
-                  alt="Zimmerbild"
-                  class="h-100"
-                />
-              </b-col>
+    <!-- Room Details: full width on mobile, 2/3 on md+ -->
+    <b-col cols="12" md="8" class="p-3">
+      <b-card-title class="room-card-title">{{ roomTitle }}</b-card-title>
 
-              <!-- Room Details -->
-              <b-col cols="8" class="p-3">
-                <b-card-title>{{ roomTitle }}</b-card-title>
+      <b-card-text class="mt-3">
+        <strong>{{ room.beds }}</strong> Bett(en)<br>
+        <strong>{{ room.pricePerNight }} €</strong> / Nacht
 
-                <b-card-text class="mt-3">
-                  <strong>{{ room.beds }}</strong> Bett(en)<br>
-                  <strong>{{ room.pricePerNight }} €</strong> / Nacht
+        <!-- Extras -->
+        <div class="d-flex flex-wrap gap-2 mt-2">
+          <span
+            v-for="extra in extrasComputed"
+            :key="extra.label"
+            class="d-flex align-items-center gap-1 text-secondary"
+          >
+            <i :class="extra.icon"></i>
+            {{ extra.label }}
+          </span>
+        </div>
+      </b-card-text>
+    </b-col>
 
-                  <!-- Extras -->
-                  <div class="d-flex flex-wrap gap-2 mt-2">
-                    <span
-                      v-for="extra in extrasComputed"
-                      :key="extra.label"
-                      class="d-flex align-items-center gap-1 text-secondary"
-                    >
-                      <i :class="extra.icon"></i>
-                      {{ extra.label }}
-                    </span>
-                  </div>
-                </b-card-text>
-              </b-col>
-
-            </b-row>
-          </b-card>
+  </b-row>
+</b-card>
 
           <!-- Booking Block -->
-          <div class="mt-4">
-            <p>Ausgewählter Zeitraum:
-             
-              <strong>{{ fromDate }}</strong> bis
-              <strong>{{ toDate }}</strong>
-            </p>
 
 <BookingForm
   v-model:firstName="firstName"
@@ -68,6 +62,9 @@
   v-model:email="email"
   v-model:dob="dob"
   v-model:fruehstueck="fruehstueck"
+  v-model:dateFrom="fromDate"
+  v-model:dateTo="toDate"
+  v-model:roomId="roomId"
 />
 <BookingModal
  v-model:firstName="firstName"
@@ -80,7 +77,6 @@
     v-model:toDate="toDate"
     v-model:roomId="roomId"
 />
-          </div>
         </b-col>
       </b-row>
     </div>
@@ -94,12 +90,11 @@ import { useRoute } from 'vue-router'
 import BookingForm from '../components/BookingForm.vue'
 import BookingModal from '../components/BookingModal.vue'
 
-
 const route = useRoute()
 
 const roomId = route.params.roomId
-const fromDate = route.query.from || ''
-const toDate = route.query.to || ''
+const fromDate = ref(route.query.from || '')
+const toDate = ref(route.query.to || '')
 
 const room = ref(null)
 const loading = ref(true)
@@ -123,7 +118,6 @@ const icons = {
   "handicapped accessible": "bi bi-wheelchair"
 }
 
-
 // Helper: make extras unique
 function normalizeExtras(extras) {
   if (!Array.isArray(extras)) return []
@@ -136,20 +130,21 @@ function normalizeExtras(extras) {
     }))
 }
 
-
-// Computed values
+// Computed values - room title
 const roomTitle = computed(() =>
   room.value
     ? `Zimmer ${room.value.roomNumber} – ${room.value.roomName}`
     : ''
 )
 
+// Computed values - room extras
 const extrasComputed = computed(() =>
   room.value ? normalizeExtras(room.value.extras) : []
 )
 
 // Fetch room data
 onMounted(async () => {
+
   try {
     const res = await fetch(
       `https://boutique-hotel.helmuth-lammer.at/api/v1/rooms/${roomId}`
@@ -165,4 +160,5 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
 </script>

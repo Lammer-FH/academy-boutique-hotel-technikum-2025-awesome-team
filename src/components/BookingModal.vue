@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" :disabled="!canBook">
     Zimmer buchen
   </button>
 
@@ -17,7 +17,6 @@
           <p><strong>Zimmer:</strong> {{ roomTitle }}</p>
           <p><strong>Zeitraum:</strong> {{ fromDate }} bis {{ toDate }}</p>
           <p><strong>Frühstück: </strong>{{ fruehstueck ? 'Ja' : 'Nein' }}</p>
-          <p v-if="bookingId"><strong>Buchungs-ID:</strong> {{ bookingId }}</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Daten ändern</button>
@@ -29,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   firstName: String,
@@ -64,9 +63,27 @@ const submitBooking = async () => {
     const data = await res.json()
     bookingId.value = data.id
     console.log('Buchung erfolgreich, ID:', bookingId.value)
+
+     // Nach erfolgreicher Buchung weiterleiten und Daten mitgeben
+    router.push({
+      name: 'booked',
+      query: {
+        bookingId: bookingId.value,
+        firstname: props.firstName,
+        lastname: props.lastName,
+        roomTitle: props.roomTitle,
+        from: props.fromDate,
+        to: props.toDate,
+        fruehstueck: props.fruehstueck ? 'ja' : 'nein'
+      }
+    })
   } catch (err) {
     console.error(err)
     error.value = 'Fehler bei der Buchung. Bitte versuchen Sie es erneut.'
   }
 }
+
+const canBook = computed(() => {
+  return props.firstName && props.lastName && props.email && props.dob
+})
 </script>
