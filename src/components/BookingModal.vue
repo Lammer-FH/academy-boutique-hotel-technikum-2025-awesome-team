@@ -29,6 +29,9 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter} from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   firstName: String,
@@ -46,6 +49,10 @@ const bookingId = ref(null)
 const error = ref(null)
 
 const submitBooking = async () => {
+    const available = await isRoomAvailable() 
+
+    if (available){
+        console.log("Zimmer ist verfügbar, sende Buchung...")
   try {
     const res = await fetch(`https://boutique-hotel.helmuth-lammer.at/api/v1/room/${props.roomId}/from/${props.fromDate}/to/${props.toDate}`, {
       method: 'POST',
@@ -63,9 +70,12 @@ const submitBooking = async () => {
     const data = await res.json()
     bookingId.value = data.id
     console.log('Buchung erfolgreich, ID:', bookingId.value)
+const modalEl = document.getElementById('staticBackdrop')
+const modal = bootstrap.Modal.getInstance(modalEl)
+if (modal) modal.hide()
 
      // Nach erfolgreicher Buchung weiterleiten und Daten mitgeben
-    router.push({
+     router.push({
       name: 'booked',
       query: {
         bookingId: bookingId.value,
@@ -81,9 +91,25 @@ const submitBooking = async () => {
     console.error(err)
     error.value = 'Fehler bei der Buchung. Bitte versuchen Sie es erneut.'
   }
+} else {
+    alert("Das ausgewählte Zimmer ist im gewählten Zeitraum nicht verfügbar. Bitte wählen Sie andere Daten.")
+}
 }
 
 const canBook = computed(() => {
   return props.firstName && props.lastName && props.email && props.dob
 })
+
+// Check room availability
+async function isRoomAvailable() {
+  try {
+    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${props.roomId}/from/${props.fromDate}/to/${props.toDate}`
+    const res = await fetch(url)
+    const data = await res.json()
+    return data.available
+  } catch (err) {
+    console.error("Fehler beim Prüfen der Verfügbarkeit", err)
+    return false
+  }
+}
 </script>
