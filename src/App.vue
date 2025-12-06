@@ -23,14 +23,16 @@ import Footer from './components/Footer.vue'
   margin-bottom: 120px;
 }
 
-.btn-primary{
-    background-color: var(--color-primary);
-    border: none;
-      white-space: nowrap;
+.btn-primary, .btn-primary:visited{
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
 }
 
 .btn-primary:hover{
-    background-color: var(--color-primary1);
+    background-color: var(--color-primary1)!important;
+    border-color: white ;
+    color: var(--color-text)!important;
 }
 
 .room-image {
@@ -88,6 +90,33 @@ import Footer from './components/Footer.vue'
   display: flex;
   align-items: center;
   margin: 0 !important;
+}
+
+.btn-secondary,
+.btn-secondary:visited {
+  background-color: var(--color-primary1) !important;
+  border-color: var(--color-primary1) !important;
+  color: white !important;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary1) !important;
+  border-color: var(--color-secondary1) !important;
+}
+
+.btn-secondary:active,
+.btn-secondary:focus {
+  background-color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  box-shadow: none !important;
+}
+
+.modal-content {
+  border: 2px solid var(--color-primary) !important;
+}
+
+.modal-header {
+  background-color: var(--color-bg1) !important;
 }
 
 .page-item .page-link {

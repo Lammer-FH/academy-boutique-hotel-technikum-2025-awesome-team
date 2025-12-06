@@ -125,6 +125,16 @@
       </b-col>
     </b-row>
             </b-container>
+    <b-modal
+    v-model="dateErrorModalVisible"
+    title="Achtung"
+    ok-title="OK"
+    ok-variant="primary"
+    centered
+  >
+    Bitte An- und Abreisedatum wählen!
+  </b-modal>
+
 </template>
 
 
@@ -139,6 +149,7 @@ const availability = ref({})
 const currentPage = ref(1)
 const perPage = 5
 
+const dateErrorModalVisible = ref(false)
 
 //5 Zi pro Seite
 const paginatedRooms = computed(() => {
@@ -197,7 +208,7 @@ onMounted(async () => {
 //Verfügbarkeit prüfen
 const checkAllAvailability = async () => {
   if (!fromDate.value || !toDate.value) {
-    alert("Bitte An- und Abreisedatum wählen!")
+    dateErrorModalVisible.value = true
     return
   }
 
