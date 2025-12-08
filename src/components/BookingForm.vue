@@ -7,15 +7,20 @@
           type="date"
           v-model="localDateFrom"
           class="w-auto"
-          @input="validateNewFromDate($event)"
         />
+
         <span>bis</span>
+
         <b-form-input
           type="date"
           v-model="localDateTo"
           class="w-auto"
-          @input="validateNewToDate($event)"
         />
+
+        <!-- New validate button -->
+        <b-button variant="primary" @click="validateDates">
+          Prüfen
+        </b-button>
       </div>
     </b-form-group>
 
@@ -31,6 +36,7 @@
           />
         </b-form-group>
       </b-col>
+
       <b-col>
         <b-form-group label="Nachname">
           <b-form-input
@@ -55,6 +61,7 @@
           />
         </b-form-group>
       </b-col>
+
       <b-col>
         <b-form-group label="Geburtsdatum">
           <b-form-input
@@ -76,6 +83,7 @@
         >
           Ja
         </b-form-radio>
+
         <b-form-radio
           :checked="!fruehstueck"
           @change="$emit('update:fruehstueck', false)"
@@ -114,24 +122,15 @@ const emit = defineEmits([
 
 const router = useRouter()
 
-// Local reactive dates
+// Local reactive dates (user can change freely)
 const localDateFrom = ref(props.dateFrom)
 const localDateTo = ref(props.dateTo)
 
-// Keep last valid dates
-const lastValidFrom = ref(props.dateFrom)
-const lastValidTo = ref(props.dateTo)
+// Sync parent -> local (e.g. when URL changes)
+watch(() => props.dateFrom, val => localDateFrom.value = val)
+watch(() => props.dateTo, val => localDateTo.value = val)
 
-// Sync local → parent
-watch(localDateFrom, val => emit("update:dateFrom", val))
-watch(localDateTo, val => emit("update:dateTo", val))
-
-// Sync parent → local
-watch(() => props.dateFrom, val => { localDateFrom.value = val; lastValidFrom.value = val })
-watch(() => props.dateTo, val => { localDateTo.value = val; lastValidTo.value = val })
-
-
-// Check room availability
+// API call
 async function isRoomAvailable(from, to) {
   try {
     const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${props.roomId}/from/${from}/to/${to}`
@@ -144,42 +143,40 @@ async function isRoomAvailable(from, to) {
   }
 }
 
-// Validate new from date
-async function validateNewFromDate(newDate) {
-    if (newDate > localDateTo.value) {
+// Button-based validation
+async function validateDates() {
+  const from = localDateFrom.value
+  const to = localDateTo.value
+
+  // Basic checks
+  if (!from || !to) {
+    alert("Bitte beide Daten auswählen.")
+    return
+  }
+
+  if (from > to) {
     alert("Anreisedatum darf nicht nach dem Abreisedatum liegen.")
-    localDateFrom.value = lastValidFrom.value
     return
   }
-  const available = await isRoomAvailable(newDate, localDateTo.value)
+
+  // Check availability
+  const available = await isRoomAvailable(from, to)
+
   if (!available) {
-    alert("Zimmer ist an diesem Datum nicht verfügbar.")
-    localDateFrom.value = lastValidFrom.value
+    alert("Zimmer ist in diesem Zeitraum nicht verfügbar.")
     return
   }
-  localDateFrom.value = newDate
-  lastValidFrom.value = newDate
+
+  // Save to parent now that both dates are valid
+  emit("update:dateFrom", from)
+  emit("update:dateTo", to)
+
   updateUrl()
+
+  alert("Zeitraum ist verfügbar!")
 }
 
-// Validate new to date
-async function validateNewToDate(newDate) {
-     if (newDate < localDateFrom.value) {
-    alert("Abreisedatum darf nicht vor dem Anreisedatum liegen.")
-    localDateTo.value = lastValidTo.value
-    return
-  }
-  const available = await isRoomAvailable(localDateFrom.value, newDate)
-  if (!available) {
-    alert("Zimmer ist an diesem Datum nicht verfügbar.")
-    localDateTo.value = lastValidTo.value
-    return
-  }
-  localDateTo.value = newDate
-  lastValidTo.value = newDate
-    updateUrl()
-}
-// Update URL query params
+// Update URL
 function updateUrl() {
   router.replace({
     query: {
