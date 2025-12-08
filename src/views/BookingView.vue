@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid class="py-5 mt-4">
+  <b-container fluid class="py-5 mt-4" style="max-width: 900px;">
 
     <!-- Loading -->
     <div v-if="loading" class="text-center">
@@ -13,71 +13,65 @@
 
     <!-- Room Content -->
     <div v-else>
-      <b-row class="justify-content-center">
-        <b-col cols="12" style="max-width: 900px;">
-
+      <b-row class="justify-content-center mt-4 d-flex flex-column">
           <!-- Room Card -->
-<b-card class="shadow-sm">
-  <b-row no-gutters>
-    
-    <!-- Image: full width on mobile, 1/3 on md+ -->
-    <b-col cols="12" md="4">
-      <b-card-img
-        :src="`/images/rooms/${room.id}.jpg`"
-        alt="Zimmerbild"
-        class="h-100"
-      />
-    </b-col>
+          <b-card class="shadow-sm mb-4 p-0">
+            <b-row no-gutters>
+              <!-- Image: full width on mobile, 1/3 on md+ -->
+              <b-col cols="12" md="4">
+                <b-card-img
+                  :src="`/images/rooms/${room.id}.jpg`"
+                  alt="Zimmerbild"
+                  class="h-100"
+                />
+              </b-col>
+              <!-- Room Details: full width on mobile, 2/3 on md+ -->
+              <b-col cols="12" md="8" class="p-3">
+                <b-card-title class="room-card-title">{{ roomTitle }}</b-card-title>
 
-    <!-- Room Details: full width on mobile, 2/3 on md+ -->
-    <b-col cols="12" md="8" class="p-3">
-      <b-card-title class="room-card-title">{{ roomTitle }}</b-card-title>
+                <b-card-text class="mt-3">
+                  <strong>{{ room.beds }}</strong> Bett(en)<br>
+                  <strong>{{ room.pricePerNight }} €</strong> / Nacht
 
-      <b-card-text class="mt-3">
-        <strong>{{ room.beds }}</strong> Bett(en)<br>
-        <strong>{{ room.pricePerNight }} €</strong> / Nacht
-
-        <!-- Extras -->
-        <div class="d-flex flex-wrap gap-2 mt-2">
-          <span
-            v-for="extra in extrasComputed"
-            :key="extra.label"
-            class="d-flex align-items-center gap-1 text-secondary"
-          >
-            <i :class="extra.icon"></i>
-            {{ extra.label }}
-          </span>
-        </div>
-      </b-card-text>
-    </b-col>
-
-  </b-row>
-</b-card>
-
+                  <!-- Extras -->
+                  <div class="d-flex flex-wrap gap-2 mt-2">
+                    <span
+                      v-for="extra in extrasComputed"
+                      :key="extra.label"
+                      class="d-flex align-items-center gap-1 text-secondary"
+                    >
+                      <i :class="extra.icon"></i>
+                      {{ extra.label }}
+                    </span>
+                  </div>
+                </b-card-text>
+              </b-col>
+            </b-row>
+          </b-card>
           <!-- Booking Block -->
-
-<BookingForm
-  v-model:firstName="firstName"
-  v-model:lastName="lastName"
-  v-model:email="email"
-  v-model:dob="dob"
-  v-model:fruehstueck="fruehstueck"
-  v-model:dateFrom="fromDate"
-  v-model:dateTo="toDate"
-  v-model:roomId="roomId"
-/>
-<BookingModal
- v-model:firstName="firstName"
-  v-model:lastName="lastName"
-  v-model:email="email"
-  v-model:dob="dob"
-  v-model:fruehstueck="fruehstueck"
-  v-model:roomTitle="roomTitle"
-  v-model:fromDate="fromDate"
-    v-model:toDate="toDate"
-    v-model:roomId="roomId"
-/>
-        </b-col>
+          <BookingForm
+            v-model:firstName="firstName"
+            v-model:lastName="lastName"
+            v-model:email="email"
+            v-model:dob="dob"
+            v-model:fruehstueck="fruehstueck"
+            v-model:dateFrom="fromDate"
+            v-model:dateTo="toDate"
+            v-model:roomId="roomId"
+          />
+          <div class="d-flex flex-row-reverse">
+            <BookingModal
+              v-model:firstName="firstName"
+              v-model:lastName="lastName"
+              v-model:email="email"
+              v-model:dob="dob"
+              v-model:fruehstueck="fruehstueck"
+              v-model:roomTitle="roomTitle"
+              v-model:fromDate="fromDate"
+              v-model:toDate="toDate"
+              v-model:roomId="roomId"
+            />
+          </div>
       </b-row>
     </div>
     

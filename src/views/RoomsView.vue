@@ -142,9 +142,13 @@
 import { ref, computed, onMounted } from "vue"
 import axios from "axios"
 
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
 const rooms = ref([])
-const fromDate = ref(null)
-const toDate = ref(null)
+const fromDate = ref(today.toISOString().substr(0, 10))
+const toDate = ref(tomorrow.toISOString().substr(0, 10))
 const availability = ref({})
 const currentPage = ref(1)
 const perPage = 5

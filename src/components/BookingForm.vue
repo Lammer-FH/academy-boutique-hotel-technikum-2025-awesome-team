@@ -1,7 +1,7 @@
 <template>
   <b-form>
     <!-- Booking Dates -->
-    <b-form-group label="Ausgewählter Zeitraum:">
+    <b-form-group label="Ausgewählter Zeitraum">
       <div class="d-flex align-items-center gap-2">
         <b-form-input
           type="date"
@@ -19,49 +19,70 @@
       </div>
     </b-form-group>
 
-    <!-- User Info -->
-    <b-form-group label="Vorname:">
-      <b-form-input
-        :value="firstName"
-        @input="$emit('update:firstName', $event)"
-        required
-      />
-    </b-form-group>
+    <b-row>
+      <b-col>
+        <!-- User Info -->
+        <b-form-group label="Vorname">
+          <b-form-input
+            placeholder="Vorname"
+            :value="firstName"
+            @input="$emit('update:firstName', $event)"
+            required
+          />
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Nachname">
+          <b-form-input
+            placeholder="Nachname"
+            :value="lastName"
+            @input="$emit('update:lastName', $event)"
+            required
+          />
+        </b-form-group>
+      </b-col>
+    </b-row>
 
-    <b-form-group label="Nachname:">
-      <b-form-input
-        :value="lastName"
-        @input="$emit('update:lastName', $event)"
-        required
-      />
-    </b-form-group>
-
-    <b-form-group label="E-Mail:">
-      <b-form-input
-        type="email"
-        :value="email"
-        @input="$emit('update:email', $event)"
-        required
-      />
-    </b-form-group>
-
-    <b-form-group label="Geburtsdatum:">
-      <b-form-input
-        type="date"
-        :value="dob"
-        @input="$emit('update:dob', $event)"
-        required
-      />
-    </b-form-group>
+    <b-row>
+      <b-col>
+        <b-form-group label="E-Mail">
+          <b-form-input
+            placeholder="E-Mail"
+            type="email"
+            :value="email"
+            @input="$emit('update:email', $event)"
+            required
+          />
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Geburtsdatum">
+          <b-form-input
+            type="date"
+            :value="dob"
+            @input="$emit('update:dob', $event)"
+            required
+          />
+        </b-form-group>
+      </b-col>
+    </b-row>
 
     <!-- Breakfast Option -->
-    <b-form-group>
-      <b-form-checkbox
-        :checked="fruehstueck"
-        @change="$emit('update:fruehstueck', $event)"
-      >
-        Frühstück hinzufügen{{ fruehstueck ? ' (Ja)' : ' (Nein)' }}
-      </b-form-checkbox>
+    <b-form-group label="Frühstück">
+      <div class="d-flex gap-3">
+        <b-form-radio
+          :checked="fruehstueck"
+          @change="$emit('update:fruehstueck', true)"
+        >
+          Ja
+        </b-form-radio>
+        <b-form-radio
+          :checked="!fruehstueck"
+          @change="$emit('update:fruehstueck', false)"
+        >
+          Nein
+        </b-form-radio>
+      </div>
     </b-form-group>
   </b-form>
 </template>
