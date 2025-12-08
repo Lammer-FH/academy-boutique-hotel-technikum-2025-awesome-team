@@ -3,6 +3,7 @@
     Zimmer buchen
   </button>
 
+  <!-- Booking Confirmation Modal -->
   <div ref="booking-modal" class="modal fade" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -25,12 +26,18 @@
       </div>
     </div>
   </div>
+
+  <!-- Alert Modal -->
+  <b-modal v-model="showAlertModal" title="Hinweis" hide-footer>
+    <p>{{ alertMessage }}</p>
+    <b-button variant="primary" @click="closeAlert">OK</b-button>
+  </b-modal>
 </template>
 
 <script setup>
 import { ref, computed, useTemplateRef } from 'vue'
-import { useRouter} from 'vue-router'
-import * as bootstrap from 'bootstrap';
+import { useRouter } from 'vue-router'
+import * as bootstrap from 'bootstrap'
 
 const router = useRouter()
 
@@ -49,23 +56,37 @@ const props = defineProps({
 const bookingId = ref(null)
 const error = ref(null)
 
-const bookingModal = useTemplateRef('booking-modal');
+// Booking modal reference
+const bookingModal = useTemplateRef('booking-modal')
 
 const openModal = () => {
-    const modal = bootstrap.Modal.getOrCreateInstance(bookingModal.value);
-    modal.show();
-};
+  const modal = bootstrap.Modal.getOrCreateInstance(bookingModal.value)
+  modal.show()
+}
 
 const closeModal = () => {
-    const modal = bootstrap.Modal.getOrCreateInstance(bookingModal.value);
-    modal.hide();
-};
+  const modal = bootstrap.Modal.getOrCreateInstance(bookingModal.value)
+  modal.hide()
+}
+
+// Alert modal state
+const showAlertModal = ref(false)
+const alertMessage = ref("")
+
+function showAlert(message) {
+  alertMessage.value = message
+  showAlertModal.value = true
+}
+
+function closeAlert() {
+  showAlertModal.value = false
+}
 
 const submitBooking = async () => {
   const available = await isRoomAvailable()
 
   if (!available) {
-    alert("Das ausgewählte Zimmer ist im gewählten Zeitraum nicht verfügbar. Bitte wählen Sie andere Daten.")
+    showAlert("Das ausgewählte Zimmer ist im gewählten Zeitraum nicht verfügbar. Bitte wählen Sie andere Daten.")
     return
   }
 
@@ -94,14 +115,12 @@ const submitBooking = async () => {
 
     closeModal()
 
-    // 🔥 Clean redirect (no long query string)
     router.push({ name: 'booked', params: { id: data.id }, query: { new: true } })
   } catch (err) {
     console.error(err)
-    error.value = 'Fehler bei der Buchung. Bitte versuchen Sie es erneut.'
+    showAlert('Fehler bei der Buchung. Bitte versuchen Sie es erneut.')
   }
 }
-
 
 const canBook = computed(() => {
   return props.firstName && props.lastName && props.email && props.dob

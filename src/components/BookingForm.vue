@@ -1,5 +1,11 @@
 <template>
   <b-form>
+    <!-- Alert Modal -->
+    <b-modal v-model="showModal" title="Hinweis" hide-footer>
+      <p>{{ modalMessage }}</p>
+      <b-button variant="primary" @click="closeModal">OK</b-button>
+    </b-modal>
+
     <!-- Booking Dates -->
     <b-form-group label="Ausgewählter Zeitraum">
       <div class="d-flex align-items-center gap-2">
@@ -8,16 +14,14 @@
           v-model="localDateFrom"
           class="w-auto"
         />
-
         <span>bis</span>
-
         <b-form-input
           type="date"
           v-model="localDateTo"
           class="w-auto"
         />
 
-        <!-- New validate button -->
+        <!-- Validate button -->
         <b-button variant="primary" @click="validateDates">
           Prüfen
         </b-button>
@@ -122,11 +126,24 @@ const emit = defineEmits([
 
 const router = useRouter()
 
-// Local reactive dates (user can change freely)
+// Local reactive dates
 const localDateFrom = ref(props.dateFrom)
 const localDateTo = ref(props.dateTo)
 
-// Sync parent -> local (e.g. when URL changes)
+// Modal state
+const showModal = ref(false)
+const modalMessage = ref("")
+
+function showAlert(message) {
+  modalMessage.value = message
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+}
+
+// Sync parent -> local
 watch(() => props.dateFrom, val => localDateFrom.value = val)
 watch(() => props.dateTo, val => localDateTo.value = val)
 
@@ -150,12 +167,12 @@ async function validateDates() {
 
   // Basic checks
   if (!from || !to) {
-    alert("Bitte beide Daten auswählen.")
+    showAlert("Bitte beide Daten auswählen.")
     return
   }
 
   if (from > to) {
-    alert("Anreisedatum darf nicht nach dem Abreisedatum liegen.")
+    showAlert("Anreisedatum darf NICHT nach dem Abreisedatum liegen.")
     return
   }
 
@@ -163,7 +180,7 @@ async function validateDates() {
   const available = await isRoomAvailable(from, to)
 
   if (!available) {
-    alert("Zimmer ist in diesem Zeitraum nicht verfügbar.")
+    showAlert("Zimmer ist in diesem Zeitraum NICHT verfügbar.")
     return
   }
 
@@ -173,7 +190,7 @@ async function validateDates() {
 
   updateUrl()
 
-  alert("Zeitraum ist verfügbar!")
+  showAlert("Zimmer ist in diesem Zeitraum VERFÜGBAR!")
 }
 
 // Update URL
