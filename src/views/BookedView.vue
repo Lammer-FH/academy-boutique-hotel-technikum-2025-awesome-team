@@ -181,7 +181,7 @@ watch(() => route.params.id, fetchData, { immediate: true });
 // TODO: Remove bookingStore
 
 async function fetchData(id) {
-	const url = "https://boutique-hotel.helmuth-lammer.at/api/v1/bookings/343";
+	const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/bookings/${id}`;
 
 	error.value = booking.value = null;
 	loading.value = true;
