@@ -31,9 +31,6 @@
 import { ref, computed, useTemplateRef } from 'vue'
 import { useRouter} from 'vue-router'
 import * as bootstrap from 'bootstrap';
-import { useBookingStore } from '@/stores/bookingStore'
-
-const bookingStore = useBookingStore()
 
 const router = useRouter()
 
@@ -95,24 +92,10 @@ const submitBooking = async () => {
     bookingId.value = data.id
     console.log('Buchung erfolgreich, ID:', bookingId.value)
 
-
-    // 🔥 Save data in Pinia instead of query params
-    bookingStore.setBookingData({
-      bookingId: bookingId.value,
-      firstname: props.firstName,
-      lastname: props.lastName,
-      email: props.email,
-      dob: props.dob,
-      roomTitle: props.roomTitle,
-      from: props.fromDate,
-      to: props.toDate,
-      fruehstueck: props.fruehstueck
-    })
-
     closeModal()
 
     // 🔥 Clean redirect (no long query string)
-    router.push({ name: 'booked'  })
+    router.push({ name: 'booked', params: { id: data.id }, query: { new: true } })
   } catch (err) {
     console.error(err)
     error.value = 'Fehler bei der Buchung. Bitte versuchen Sie es erneut.'

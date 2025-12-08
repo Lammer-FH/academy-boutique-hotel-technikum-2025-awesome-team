@@ -27,7 +27,7 @@
               </b-col>
               <!-- Room Details: full width on mobile, 2/3 on md+ -->
               <b-col cols="12" md="8" class="p-3">
-                <b-card-title class="room-card-title">{{ roomTitle }}</b-card-title>
+                <b-card-title class="room-card-title"><strong>{{ roomTitle }}</strong></b-card-title>
 
                 <b-card-text class="mt-3">
                   <strong>{{ room.beds }}</strong> Bett(en)<br>
