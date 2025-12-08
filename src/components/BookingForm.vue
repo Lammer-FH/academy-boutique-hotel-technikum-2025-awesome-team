@@ -82,15 +82,15 @@
     <b-form-group label="Frühstück">
       <div class="d-flex gap-3">
         <b-form-radio
-          :checked="fruehstueck"
-          @change="$emit('update:fruehstueck', true)"
+            :checked="fruehstueck"
+            @change="$emit('update:fruehstueck', true)"
         >
           Ja
         </b-form-radio>
 
         <b-form-radio
-          :checked="!fruehstueck"
-          @change="$emit('update:fruehstueck', false)"
+            :checked="!fruehstueck"
+            @change="$emit('update:fruehstueck', false)"
         >
           Nein
         </b-form-radio>
@@ -204,3 +204,13 @@ function updateUrl() {
   })
 }
 </script>
+
+<style>
+.form-check-input:checked{
+    background-color: var(--color-primary);
+    border-color: var(--color-secondary);
+}
+.form-check-input:focus-within{
+    box-shadow: none
+}
+</style>
