@@ -26,7 +26,7 @@
     </b-col>
   </b-row>
 
-  <div class="primary-bar d-flex flex-wrap justify-content-center align-items-center gap-3 py-3 mb-4">
+  <div class="primary-bar d-flex flex-column justify-content-center align-items-center gap-3 py-3 mb-4">
     <b-button variant="primary" class="check-btn" @click="checkAllAvailability">
       Verfügbarkeit prüfen
     </b-button>
@@ -36,6 +36,7 @@
       :total-rows="rooms.length"
       :per-page="perPage"
       size="sm"
+      class="pagination"
     />
   </div>
 
@@ -49,9 +50,10 @@
         lg="4"
       >
         <b-card
-          class="h-100 shadow-sm"
+          class="h-100 shadow-sm room-card"
           :title="`Zimmer ${room.roomsNumber} – ${room.roomsName}`"
         >
+        <div class="room-content">
           <!-- Zimmerbild -->
           <b-card-img
             :src="`/images/rooms/${room.id}.jpg`"
@@ -92,8 +94,10 @@
               Belegt
             </span>
           </div>
+          </div>
 
           <!-- Button -->
+           <div class="room-button">
             <div v-if="fromDate && toDate && availability[room.id] !== false">
   <router-link
     :to="{
@@ -112,19 +116,31 @@
 </div>
 
 <div v-else>
-  <b-button variant="primary" class="mt-3 w-100" disabled>
+  <b-button variant="primary" class="mt-3 w-100 btn-disabled" disabled>
     Jetzt buchen
   </b-button>
+</div>
 </div>
         </b-card>
       </b-col>
     </b-row>
             </b-container>
+    <b-modal
+    v-model="dateErrorModalVisible"
+    title="Achtung"
+    ok-title="OK"
+    ok-variant="primary"
+    centered
+  >
+    Bitte An- und Abreisedatum wählen!
+  </b-modal>
+
 </template>
 
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
+import axios from "axios"
 
 const rooms = ref([])
 const fromDate = ref(null)
@@ -133,6 +149,7 @@ const availability = ref({})
 const currentPage = ref(1)
 const perPage = 5
 
+const dateErrorModalVisible = ref(false)
 
 //5 Zi pro Seite
 const paginatedRooms = computed(() => {
@@ -163,14 +180,35 @@ const roomExtras = (room) => {
 
 //Daten vom Server laden
 onMounted(async () => {
-  const res = await fetch("https://boutique-hotel.helmuth-lammer.at/api/v1/rooms")
-  rooms.value = await res.json()
+  try {
+    const { data } = await axios.get(`https://boutique-hotel.helmuth-lammer.at/api/v1/rooms`)
+    const uniqueRooms = [
+      ...new Map(data.map(room => [room.id, room])).values()
+    ]
+    uniqueRooms.forEach(room => {
+      
+      const seen = new Set()
+      const filtered = []
+
+      for (const extra of room.extras) {
+        const key = Object.keys(extra)[0] 
+        if (!seen.has(key)) {
+          seen.add(key)
+          filtered.push(extra)
+        }
+      }
+      room.extras = filtered
+    })
+    rooms.value = uniqueRooms
+  } catch (error) {
+    console.error("Fehler beim Laden der Zimmer:", error)
+  }
 })
 
 //Verfügbarkeit prüfen
 const checkAllAvailability = async () => {
   if (!fromDate.value || !toDate.value) {
-    alert("Bitte An- und Abreisedatum wählen!")
+    dateErrorModalVisible.value = true
     return
   }
 
@@ -178,12 +216,16 @@ const checkAllAvailability = async () => {
   const formattedTo = formatDate(toDate.value)
 
   for (const room of rooms.value) {
-    const res = await fetch(
+  try {
+    const { data } = await axios.get(
       `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${room.id}/from/${formattedFrom}/to/${formattedTo}`
     )
-    const data = await res.json()
+
     availability.value[room.id] = data.available
+  } catch (error) {
+    console.error(`Fehler beim Laden der Verfügbarkeit für Room ${room.id}:`, error)
   }
+}  
 }
 
 //Datumsformat anpassen (11-11-25)
