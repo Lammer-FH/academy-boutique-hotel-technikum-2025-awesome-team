@@ -6,27 +6,35 @@
       <b-button variant="primary" @click="closeModal">OK</b-button>
     </b-modal>
 
-    <!-- Booking Dates -->
-    <b-form-group label="Ausgewählter Zeitraum">
-      <div class="d-flex align-items-center gap-2">
-        <b-form-input
-          type="date"
-          v-model="localDateFrom"
-          class="w-auto"
-        />
-        <span>bis</span>
-        <b-form-input
-          type="date"
-          v-model="localDateTo"
-          class="w-auto"
-        />
+<!-- Booking Dates -->
+<b-form-group label="Ausgewählter Zeitraum">
+  <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+    
+    <b-form-input
+      type="date"
+      v-model="localDateFrom"
+      class="w-100 w-sm-auto"
+    />
 
-        <!-- Validate button -->
-        <b-button variant="primary" @click="validateDates">
-          Prüfen
-        </b-button>
-      </div>
-    </b-form-group>
+    <span class="mx-sm-2">bis</span>
+
+    <b-form-input
+      type="date"
+      v-model="localDateTo"
+      class="w-100 w-sm-auto"
+    />
+
+    <!-- Validate button -->
+    <b-button 
+      variant="primary" 
+      @click="validateDates"
+      class="w-100 w-sm-auto"
+    >
+      Prüfen
+    </b-button>
+
+  </div>
+</b-form-group>
 
     <b-row>
       <b-col>
@@ -54,7 +62,7 @@
     </b-row>
 
     <b-row>
-      <b-col>
+      <b-col cols="12" sm="6">
         <b-form-group label="E-Mail">
           <b-form-input
             placeholder="E-Mail"
@@ -66,7 +74,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col>
+      <b-col cols="12" sm="6">
         <b-form-group label="Geburtsdatum">
           <b-form-input
             type="date"
@@ -206,11 +214,16 @@ function updateUrl() {
 </script>
 
 <style>
+/*Styling for from inputs*/
 .form-check-input:checked{
     background-color: var(--color-primary);
     border-color: var(--color-secondary);
 }
 .form-check-input:focus-within{
     box-shadow: none
+}
+.form-control:focus{
+    box-shadow: none;
+    border-color: var(--color-secondary);
 }
 </style>

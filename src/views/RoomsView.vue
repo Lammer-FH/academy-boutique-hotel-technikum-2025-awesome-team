@@ -222,15 +222,12 @@ const checkAllAvailability = async () => {
     return
   }
 
-  const formattedFrom = formatDate(fromDate.value)
-  const formattedTo = formatDate(toDate.value)
-
 for (const room of rooms.value) {
   const roomId = Number(room.id)
 
   try {
     const { data } = await axios.get(
-      `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${room.id}/from/${formattedFrom}/to/${formattedTo}`
+      `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${room.id}/from/${fromDate.value}/to/${toDate.value}`
     )
 
     console.log("Room:", roomId, "API returned:", data)
@@ -246,14 +243,4 @@ for (const room of rooms.value) {
   }
 }
 }
-
-//Datumsformat anpassen (11-11-25)
-const formatDate = (date) => {
-  const d = new Date(date)
-  const day = String(d.getDate()).padStart(2, "0")
-  const month = String(d.getMonth() + 1).padStart(2, "0")
-  const year = String(d.getFullYear()).slice(-2)
-  return `${day}-${month}-${year}`
-}
-
 </script>
