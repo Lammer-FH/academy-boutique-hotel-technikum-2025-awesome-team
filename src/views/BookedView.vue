@@ -50,7 +50,7 @@
 						</div>
 						<div>
 							<i class="bi bi-egg-fried"></i>
-							<b> Frühstück:</b> {{ booking.fruehstueck ? "inklusive" : "nicht gebucht" }}
+							<b> Frühstück:</b> {{ store.fruehstueck ? "inklusive" : "nicht gebucht" }}
 						</div>
 					</div>
 
@@ -92,79 +92,18 @@
 	</b-container>
 </template>
 
-<style scoped>
-/* --- FANCY STYLES --- */
-
-.text-gradient {
-	background: linear-gradient(90deg, var(--color-secondary), var(--color-primary1));
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-}
-
-.fade-in {
-	animation: fadeIn 0.8s ease;
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.booking-card {
-	border-radius: 20px;
-	background: #ffffffdd;
-	backdrop-filter: blur(10px);
-}
-
-.image-wrapper {
-	position: relative;
-	height: 100%;
-}
-
-.room-image {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
-.floating-badge {
-	position: absolute;
-	top: 12px;
-	left: 12px;
-	background: #ffffffb0;
-	padding: 6px 12px;
-	border-radius: 6px;
-	font-size: 0.9rem;
-	backdrop-filter: blur(12px);
-}
-
-.return-btn {
-	border-radius: 30px;
-	font-size: 1.2rem;
-}
-
-.shadow-xl {
-	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-}
-</style>
 
 <script setup>
 defineProps({
 	id: String,
 });
 
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useBookingStore } from "../stores/booking";
 
 const route = useRoute();
+const store = useBookingStore();
 
 const loading = ref(false);
 const data = ref(null);
@@ -177,8 +116,6 @@ const booking = computed(() => {
 });
 // watch the params of the route to fetch the data again
 watch(() => route.params.id, fetchData, { immediate: true });
-
-// TODO: Remove bookingStore
 
 async function fetchData(id) {
 	const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/bookings/${id}`;
@@ -260,6 +197,7 @@ function mapBooking(apiData) {
 			),
 		},
 
+
 		guests: apiData.guests.map(g => ({
 			id: g.id,
 			firstname: g.firstname,
@@ -282,3 +220,68 @@ const icons = {
 	"handicapped accessible": "fa-solid fa-wheelchair",
 };
 </script>
+
+
+<style scoped>
+/* --- FANCY STYLES --- */
+
+.text-gradient {
+	background: linear-gradient(90deg, var(--color-secondary), var(--color-primary1));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.fade-in {
+	animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.booking-card {
+	border-radius: 20px;
+	background: #ffffffdd;
+	backdrop-filter: blur(10px);
+}
+
+.image-wrapper {
+	position: relative;
+	height: 100%;
+}
+
+.room-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.floating-badge {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	background: #ffffffb0;
+	padding: 6px 12px;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	backdrop-filter: blur(12px);
+}
+
+.return-btn {
+	border-radius: 30px;
+	font-size: 1.2rem;
+}
+
+.shadow-xl {
+	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+</style>

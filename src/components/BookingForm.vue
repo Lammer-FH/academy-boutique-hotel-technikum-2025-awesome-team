@@ -11,7 +11,7 @@
       <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
         <b-form-input
           type="date"
-          v-model="localDateFrom"
+          v-model="store.fromDate"
           class="w-100 w-sm-auto"
         />
 
@@ -19,7 +19,7 @@
 
         <b-form-input
           type="date"
-          v-model="localDateTo"
+          v-model="store.toDate"
           class="w-100 w-sm-auto"
         />
 
@@ -44,8 +44,7 @@
         >
           <b-form-input
             placeholder="Vorname"
-            :value="firstName"
-            @input="$emit('update:firstName', $event)"
+            v-model="store.firstName"
             :state="firstNameError ? false : null"
             required
           />
@@ -61,8 +60,7 @@
         >
           <b-form-input
             placeholder="Nachname"
-            :value="lastName"
-            @input="$emit('update:lastName', $event)"
+             v-model="store.lastName"
             :state="lastNameError ? false : null"
             required
           />
@@ -81,8 +79,7 @@
           <b-form-input
             placeholder="E-Mail"
             type="email"
-            :value="email"
-            @input="$emit('update:email', $event)"
+             v-model="store.email"
             :state="emailError ? false : null"
             required
           />
@@ -94,8 +91,7 @@
         <b-form-group label="Geburtsdatum">
           <b-form-input
             type="date"
-            :value="dob"
-            @input="$emit('update:dob', $event)"
+             v-model="store.dob"
             required
           />
         </b-form-group>
@@ -105,54 +101,20 @@
     <!-- Breakfast Option -->
     <b-form-group label="Frühstück">
       <div class="d-flex gap-3">
-        <b-form-radio
-          :checked="fruehstueck"
-          @change="$emit('update:fruehstueck', true)"
-        >
-          Ja
-        </b-form-radio>
-
-        <b-form-radio
-          :checked="!fruehstueck"
-          @change="$emit('update:fruehstueck', false)"
-        >
-          Nein
-        </b-form-radio>
+<b-form-radio v-model="store.fruehstueck" :value="true">Ja</b-form-radio>
+<b-form-radio v-model="store.fruehstueck" :value="false">Nein</b-form-radio>
       </div>
     </b-form-group>
   </b-form>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch, computed } from 'vue'
+import {ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-const props = defineProps({
-  firstName: String,
-  lastName: String,
-  email: String,
-  dob: String,
-  fruehstueck: Boolean,
-  dateFrom: String,
-  dateTo: String,
-  roomId: String
-})
-
-const emit = defineEmits([
-  "update:firstName",
-  "update:lastName",
-  "update:email",
-  "update:dob",
-  "update:fruehstueck",
-  "update:dateFrom",
-  "update:dateTo"
-])
-
+import { useBookingStore } from '../stores/booking'
+const store = useBookingStore()
 const router = useRouter()
-
-// Local reactive dates
-const localDateFrom = ref(props.dateFrom)
-const localDateTo = ref(props.dateTo)
 
 // Modal state
 const showModal = ref(false)
@@ -167,14 +129,10 @@ function closeModal() {
   showModal.value = false
 }
 
-// Sync parent -> local
-watch(() => props.dateFrom, val => localDateFrom.value = val)
-watch(() => props.dateTo, val => localDateTo.value = val)
-
 // API call
-async function isRoomAvailable(from, to) {
+async function isRoomAvailable() {
   try {
-    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${props.roomId}/from/${from}/to/${to}`
+    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${store.roomId}/from/${store.fromDate}/to/${store.toDate}`
     const res = await fetch(url)
     const data = await res.json()
     return data.available
@@ -186,27 +144,22 @@ async function isRoomAvailable(from, to) {
 
 // Button-based validation for dates
 async function validateDates() {
-  const from = localDateFrom.value
-  const to = localDateTo.value
-
-  if (!from || !to) {
+  if (!store.fromDate || !store.toDate) {
     showAlert("Bitte beide Daten auswählen.")
     return
   }
 
-  if (from > to) {
+  if (store.fromDate > store.toDate) {
     showAlert("Anreisedatum darf NICHT nach dem Abreisedatum liegen.")
     return
   }
 
-  const available = await isRoomAvailable(from, to)
+  const available = await isRoomAvailable()
   if (!available) {
     showAlert("Zimmer ist in diesem Zeitraum NICHT verfügbar.")
     return
   }
 
-  emit("update:dateFrom", from)
-  emit("update:dateTo", to)
   updateUrl()
   showAlert("Zimmer ist in diesem Zeitraum VERFÜGBAR!")
 }
@@ -215,14 +168,13 @@ function updateUrl() {
   router.replace({
     query: {
       ...router.currentRoute.value.query,
-      from: localDateFrom.value,
-      to: localDateTo.value
+      from: store.fromDate,
+      to: store.toDate
     }
   })
 }
 
-// FORM VALIDATION
-
+// Validate form inputs
 const emailError = ref("")
 const firstNameError = ref("")
 const lastNameError = ref("")
@@ -233,17 +185,17 @@ function validateEmail(value) {
 }
 
 // Watchers for real-time validation
-watch(() => props.email, val => {
+watch(() => store.email, val => {
   if (!val) emailError.value = "E-Mail ist erforderlich."
   else if (!validateEmail(val)) emailError.value = "Bitte eine gültige E-Mail-Adresse eingeben."
   else emailError.value = ""
 })
 
-watch(() => props.firstName, val => {
+watch(() => store.firstName, val => {
   firstNameError.value = val ? "" : "Vorname ist erforderlich."
 })
 
-watch(() => props.lastName, val => {
+watch(() => store.lastName, val => {
   lastNameError.value = val ? "" : "Nachname ist erforderlich."
 })
 </script>

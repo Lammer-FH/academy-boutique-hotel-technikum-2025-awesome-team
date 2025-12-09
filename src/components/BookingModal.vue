@@ -1,7 +1,9 @@
 <template>
+    <b-col class="d-flex align-items-right justify-content-end mt-3">
   <button type="button" class="btn btn-primary" @click="openModal" :disabled="!canBook">
     Zimmer buchen
   </button>
+</b-col>
 
   <!-- Booking Confirmation Modal -->
   <div ref="booking-modal" class="modal fade" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -12,12 +14,12 @@
           <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p><strong>Name:</strong> {{ firstName }} {{ lastName }}</p>
-          <p><strong>E-Mail:</strong> {{ email }}</p>
-          <p><strong>Geburtsdatum:</strong> {{ dob }}</p>
-          <p><strong>Zimmer:</strong> {{ roomTitle }}</p>
-          <p><strong>Zeitraum:</strong> {{ fromDate }} bis {{ toDate }}</p>
-          <p><strong>Frühstück: </strong>{{ fruehstueck ? 'Ja' : 'Nein' }}</p>
+          <p><strong>Name:</strong> {{ store.firstName }} {{ store.lastName }}</p>
+          <p><strong>E-Mail:</strong> {{ store.email }}</p>
+          <p><strong>Geburtsdatum:</strong> {{ store.dob }}</p>
+          <p><strong>Zimmer:</strong> {{store.roomNumber}} – {{store.roomName}}</p>
+          <p><strong>Zeitraum:</strong> {{store.fromDate }} bis {{ store.toDate }}</p>
+          <p><strong>Frühstück: </strong>{{ store.fruehstueck ? 'Ja' : 'Nein' }}</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" @click="closeModal">Daten ändern</button>
@@ -38,20 +40,10 @@
 import { ref, computed, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
 import * as bootstrap from 'bootstrap'
+import { useBookingStore } from '../stores/booking'
 
 const router = useRouter()
-
-const props = defineProps({
-  firstName: String,
-  lastName: String,
-  email: String,
-  dob: String,
-  fruehstueck: Boolean,
-  roomTitle: String,
-  fromDate: String,
-  toDate: String,
-  roomId: String
-})
+const store = useBookingStore()
 
 const bookingId = ref(null)
 const error = ref(null)
@@ -94,15 +86,15 @@ const submitBooking = async () => {
 
   try {
     const res = await fetch(
-      `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${props.roomId}/from/${props.fromDate}/to/${props.toDate}`,
+      `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${store.roomId}/from/${store.fromDate}/to/${store.toDate}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstname: props.firstName,
-          lastname: props.lastName,
-          email: props.email,
-          birthdate: props.dob
+          firstname: store.firstName,
+          lastname: store.lastName,
+          email: store.email,
+          birthdate: store.dob
         })
       }
     )
@@ -112,9 +104,7 @@ const submitBooking = async () => {
     const data = await res.json()
     bookingId.value = data.id
     console.log('Buchung erfolgreich, ID:', bookingId.value)
-
     closeModal()
-
     router.push({ name: 'booked', params: { id: data.id }, query: { new: true } })
   } catch (err) {
     console.error(err)
@@ -123,13 +113,13 @@ const submitBooking = async () => {
 }
 
 const canBook = computed(() => {
-  return props.firstName && props.lastName && props.email && props.dob
+  return store.firstName && store.lastName && store.email && store.dob
 })
 
 // Check room availability
 async function isRoomAvailable() {
   try {
-    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${props.roomId}/from/${props.fromDate}/to/${props.toDate}`
+    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${store.roomId}/from/${store.fromDate}/to/${store.toDate}`
     const res = await fetch(url)
     const data = await res.json()
     return data.available

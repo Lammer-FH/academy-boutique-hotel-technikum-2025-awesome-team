@@ -230,8 +230,6 @@ for (const room of rooms.value) {
       `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${room.id}/from/${fromDate.value}/to/${toDate.value}`
     )
 
-    console.log("Room:", roomId, "API returned:", data)
-
     availability.value[roomId] = data.available === true
       ? true
       : data.available === false
