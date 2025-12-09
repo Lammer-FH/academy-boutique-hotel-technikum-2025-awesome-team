@@ -41,11 +41,12 @@ const router = createRouter({
             component: ImpressumView
         },
         {
-            path: '/booked',
+            path: '/booked/:id',
             name: 'booked',
-            component: BookedView
+            component: BookedView,
+            props: true,
+            query: { new: Boolean }
         }
-
     ]
 })
 

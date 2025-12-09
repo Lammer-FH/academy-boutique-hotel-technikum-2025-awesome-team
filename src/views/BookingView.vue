@@ -1,5 +1,6 @@
 <template>
-  <b-container fluid class="py-5 mt-4">
+  <b-container  fluid class="my-5 pt-md-4 pt-lg-5 px-2 px-md-4"  style="max-width: 900px;">
+
     <!-- Loading -->
     <div v-if="loading" class="text-center">
       <b-spinner label="Loading..."></b-spinner>
@@ -10,124 +11,74 @@
       <p>{{ error }}</p>
     </div>
 
-    <!-- Room Info & Booking Form -->
-    <div v-else-if="room">
-      <b-row class="justify-content-center mt-4">
-        <b-col cols="12" style="max-width: 900px;">
-          <b-card
-            class="h-100 shadow-sm"
-            :title="`Zimmer ${room.roomNumber} – ${room.roomName}`"
-          >
-            <!-- Room Image -->
-            <b-card-img
-              :src="`/images/rooms/${room.id}.jpg`"
-              alt="Zimmerbild"
-              class="room-image"
-            />
+    <!-- Room Content -->
+    <div v-else>
+      <b-row class="justify-content-center flex-column">
+        
+          <!-- Room Card -->
+          <b-card class="shadow-sm mb-4 p-0">
+            <b-row no-gutters>
+              <!-- Image: full width on mobile, 1/3 on md+ -->
+              <b-col cols="12" md="4">
+  <b-card-img
+    :src="`/images/rooms/${store.roomId}.jpg`"
+    alt="Zimmerbild"
+    class="h-100 w-100"
+    style="object-fit: cover;"
+  />
+</b-col>
 
-            <!-- Price & Beds -->
-            <b-card-text class="mt-3">
-              <strong>{{ room.bed }}</strong> Bett(en) <br />
-              <strong>{{ room.pricePerNight }} €</strong> / Nacht
-            </b-card-text>
+              <!-- Room Details: full width on mobile, 2/3 on md+ -->
+              <b-col cols="12" md="8" class="p-3">
+                <b-card-title class="room-card-title"><strong>Zimmer {{store.roomNumber}} – {{store.roomName}}</strong></b-card-title>
 
-            <!-- Extras -->
-            <div class="d-flex flex-wrap gap-2 mt-2">
-              <span
-                v-for="(extra, index) in roomExtras(room.extras)"
-                :key="index"
-                class="d-flex align-items-center gap-1 text-secondary"
-              >
-                <i :class="extra.icon"></i>
-                {{ extra.label }}
-              </span>
-            </div>
+                <b-card-text class="mt-3">
+                  <strong>{{ store.beds }}</strong> Bett(en)<br>
+                  <strong>{{ store.pricePerNight }} €</strong> / Nacht
 
-            <!-- Booking Form -->
-            <div class="mt-4">
-              <p>
-                Möchten Sie das Zimmer von <strong>{{ fromDate }}</strong> bis <strong>{{ toDate }}</strong> buchen? Bitte geben Sie Ihre Daten ein:
-              </p>
-
-              <b-form @submit.prevent="submitBooking">
-                <b-form-group label="Vorname:" label-for="first-name">
-                  <b-form-input
-                    id="first-name"
-                    v-model="firstName"
-                    required
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Nachname:" label-for="last-name">
-                  <b-form-input
-                    id="last-name"
-                    v-model="lastName"
-                    required
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group label="E-Mail:" label-for="email">
-                  <b-form-input
-                    id="email"
-                    type="email"
-                    v-model="email"
-                    required
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Geburtsdatum:" label-for="dob">
-                  <b-form-input
-                    id="dob"
-                    type="date"
-                    v-model="dob"
-                    required
-                  ></b-form-input>
-                </b-form-group>
-
-                <!-- Submit Button -->
-                <div class="text-center mt-4">
-                  <b-button
-                    type="submit"
-                    variant="primary"
-                    class="btn flex-fill flex-md-grow-0"
-                    :disabled="posting"
-                  >
-                    {{ posting ? 'Buchung läuft...' : 'Zimmer buchen' }}
-                  </b-button>
-                </div>
-              </b-form>
-            </div>
-
+                  <!-- Extras -->
+                  <div class="d-flex flex-wrap gap-2 mt-2">
+                    <span
+                      v-for="extra in extrasComputed"
+                      :key="extra.label"
+                      class="d-flex align-items-center gap-1 text-secondary"
+                    >
+                      <i :class="extra.icon"></i>
+                      {{ extra.label }}
+                    </span>
+                  </div>
+                </b-card-text>
+              </b-col>
+            </b-row>
           </b-card>
-        </b-col>
+
+          <!-- Booking Block -->
+          <BookingForm/>
+            <BookingModal />
+          
       </b-row>
     </div>
   </b-container>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-
+import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import BookingForm from '../components/BookingForm.vue'
+import BookingModal from '../components/BookingModal.vue'
+import { useBookingStore } from '../stores/booking'
 
 const route = useRoute()
-const router = useRouter()
-const roomId = route.params.roomId
-const fromDate = route.query.from || ''
-const toDate = route.query.to || ''
+const store = useBookingStore()
 
-const room = ref(null)
+store.roomId = route.params.roomId
+store.fromDate = ref(route.query.from || '')
+store.toDate = ref(route.query.to || '')
+
 const loading = ref(true)
 const error = ref(null)
-const posting = ref(false) // for POST request state
 
-// Form fields
-const firstName = ref('')
-const lastName = ref('')
-const email = ref('')
-const dob = ref('')
-
-// Icons mapping
+// Icon map
 const icons = {
   bathroom: "bi bi-droplet",
   minibar: "bi bi-cup-straw",
@@ -139,21 +90,36 @@ const icons = {
   "handicapped accessible": "bi bi-wheelchair"
 }
 
-// Process extras
-const roomExtras = (extras) => {
+// Helper: make extras unique
+function normalizeExtras(extras) {
   if (!Array.isArray(extras)) return []
-  return extras.map(e => ({
-    label: e.name,
-    icon: icons[e.name] || "bi bi-question-circle"
-  }))
+  const seen = new Set()
+  return extras
+    .filter(e => !seen.has(e.name) && seen.add(e.name))
+    .map(e => ({
+      label: e.name,
+      icon: icons[e.name] || "bi bi-question-circle"
+    }))
 }
+
+// Computed values - room extras
+const extrasComputed = computed(() => normalizeExtras(store.extras))
 
 // Fetch room data
 onMounted(async () => {
   try {
-    const res = await fetch(`https://boutique-hotel.helmuth-lammer.at/api/v1/rooms/${roomId}`)
-    if (!res.ok) throw new Error('Failed to fetch room')
-    room.value = await res.json()
+    const res = await fetch(
+      `https://boutique-hotel.helmuth-lammer.at/api/v1/rooms/${store.roomId}`
+    )
+
+    if (!res.ok) throw new Error('Fehler beim Laden')
+
+    const roomValue = await res.json()
+    store.roomNumber = roomValue.roomNumber
+    store.roomName = roomValue.roomName
+    store.beds = roomValue.beds
+    store.pricePerNight = roomValue.pricePerNight
+    store.extras = roomValue.extras
   } catch (err) {
     console.error(err)
     error.value = 'Konnte das Zimmer nicht laden.'
@@ -161,45 +127,4 @@ onMounted(async () => {
     loading.value = false
   }
 })
-
-// Submit booking
-const submitBooking = async () => {
-  posting.value = true
-  try {
-    const res = await fetch(
-      `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${roomId}/from/${fromDate}/to/${toDate}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstname: firstName.value,
-          lastname: lastName.value,
-          email: email.value,
-          birthdate: dob.value
-        })
-      }
-    )
-
-    if (!res.ok) {
-      const errData = await res.json()
-      throw new Error(errData.message || 'Buchung fehlgeschlagen')
-    }
-    const data = await res.json()
-    alert('Buchung war erfolgreich! Buchungsnummer: ' + data.id)
-    router.push('/booked')
-  } catch (err) {
-    console.error(err)
-    alert('Buchung war nicht erfolgreich: ' + err.message)
-  } finally {
-    posting.value = false
-  }
-}
 </script>
-
-<style scoped>
-.room-image {
-  max-height: 300px;
-  object-fit: cover;
-  width: 100%;
-}
-</style>

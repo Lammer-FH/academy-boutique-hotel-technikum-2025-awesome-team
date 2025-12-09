@@ -8,3 +8,36 @@ p {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
+
+/*Responsiveness*/
+@media (max-width: 576px) {
+
+    /* mobile xs */
+    .room-card-title {
+        font-size: 0.9rem;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+
+    /* sm */
+    .room-card-title {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+
+    /* md */
+    .room-card-title {
+        font-size: 1.25rem;
+    }
+}
+
+@media (min-width: 993px) {
+
+    /* lg+ */
+    .room-card-title {
+        font-size: 1.5rem;
+    }
+}

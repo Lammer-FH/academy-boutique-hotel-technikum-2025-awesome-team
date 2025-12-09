@@ -1,0 +1,216 @@
+<template>
+  <b-form>
+    <!-- Alert Modal -->
+    <b-modal v-model="showModal" title="Hinweis" hide-footer>
+      <p>{{ modalMessage }}</p>
+      <b-button variant="primary" @click="closeModal">OK</b-button>
+    </b-modal>
+
+    <!-- Booking Dates -->
+    <b-form-group label="Ausgewählter Zeitraum">
+      <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+        <b-form-input
+          type="date"
+          v-model="store.fromDate"
+          class="w-100 w-sm-auto"
+        />
+
+        <span class="mx-sm-2">bis</span>
+
+        <b-form-input
+          type="date"
+          v-model="store.toDate"
+          class="w-100 w-sm-auto"
+        />
+
+        <!-- Validate button -->
+        <b-button 
+          variant="primary" 
+          @click="validateDates"
+          class="w-100 w-sm-auto"
+        >
+          Prüfen
+        </b-button>
+      </div>
+    </b-form-group>
+
+    <b-row>
+      <!-- First Name -->
+      <b-col cols="12" sm="6">
+        <b-form-group
+          label="Vorname"
+          :state="firstNameError ? false : null"
+          :invalid-feedback="firstNameError"
+        >
+          <b-form-input
+            placeholder="Vorname"
+            v-model="store.firstName"
+            :state="firstNameError ? false : null"
+            required
+          />
+        </b-form-group>
+      </b-col>
+
+      <!-- Last Name -->
+      <b-col cols="12" sm="6">
+        <b-form-group
+          label="Nachname"
+          :state="lastNameError ? false : null"
+          :invalid-feedback="lastNameError"
+        >
+          <b-form-input
+            placeholder="Nachname"
+             v-model="store.lastName"
+            :state="lastNameError ? false : null"
+            required
+          />
+        </b-form-group>
+      </b-col>
+    </b-row>
+
+    <b-row>
+      <!-- Email -->
+      <b-col cols="12" sm="6">
+        <b-form-group
+          label="E-Mail"
+          :state="emailError ? false : null"
+          :invalid-feedback="emailError"
+        >
+          <b-form-input
+            placeholder="E-Mail"
+            type="email"
+             v-model="store.email"
+            :state="emailError ? false : null"
+            required
+          />
+        </b-form-group>
+      </b-col>
+
+      <!-- Date of Birth -->
+      <b-col cols="12" sm="6">
+        <b-form-group label="Geburtsdatum">
+          <b-form-input
+            type="date"
+             v-model="store.dob"
+            required
+          />
+        </b-form-group>
+      </b-col>
+    </b-row>
+
+    <!-- Breakfast Option -->
+    <b-form-group label="Frühstück">
+      <div class="d-flex gap-3">
+<b-form-radio v-model="store.fruehstueck" :value="true">Ja</b-form-radio>
+<b-form-radio v-model="store.fruehstueck" :value="false">Nein</b-form-radio>
+      </div>
+    </b-form-group>
+  </b-form>
+</template>
+
+<script setup>
+import {ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { useBookingStore } from '../stores/booking'
+const store = useBookingStore()
+const router = useRouter()
+
+// Modal state
+const showModal = ref(false)
+const modalMessage = ref("")
+
+function showAlert(message) {
+  modalMessage.value = message
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+}
+
+// API call
+async function isRoomAvailable() {
+  try {
+    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${store.roomId}/from/${store.fromDate}/to/${store.toDate}`
+    const res = await fetch(url)
+    const data = await res.json()
+    return data.available
+  } catch (err) {
+    console.error("Fehler beim Prüfen der Verfügbarkeit", err)
+    return false
+  }
+}
+
+// Button-based validation for dates
+async function validateDates() {
+  if (!store.fromDate || !store.toDate) {
+    showAlert("Bitte beide Daten auswählen.")
+    return
+  }
+
+  if (store.fromDate > store.toDate) {
+    showAlert("Anreisedatum darf NICHT nach dem Abreisedatum liegen.")
+    return
+  }
+
+  const available = await isRoomAvailable()
+  if (!available) {
+    showAlert("Zimmer ist in diesem Zeitraum NICHT verfügbar.")
+    return
+  }
+
+  updateUrl()
+  showAlert("Zimmer ist in diesem Zeitraum VERFÜGBAR!")
+}
+
+function updateUrl() {
+  router.replace({
+    query: {
+      ...router.currentRoute.value.query,
+      from: store.fromDate,
+      to: store.toDate
+    }
+  })
+}
+
+// Validate form inputs
+const emailError = ref("")
+const firstNameError = ref("")
+const lastNameError = ref("")
+
+function validateEmail(value) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return re.test(value)
+}
+
+// Watchers for real-time validation
+watch(() => store.email, val => {
+  if (!val) emailError.value = "E-Mail ist erforderlich."
+  else if (!validateEmail(val)) emailError.value = "Bitte eine gültige E-Mail-Adresse eingeben."
+  else emailError.value = ""
+})
+
+watch(() => store.firstName, val => {
+  firstNameError.value = val ? "" : "Vorname ist erforderlich."
+})
+
+watch(() => store.lastName, val => {
+  lastNameError.value = val ? "" : "Nachname ist erforderlich."
+})
+</script>
+
+<style>
+/* Styling for form inputs and radios */
+.form-check-input:checked{
+    background-color: var(--color-primary);
+    border-color: var(--color-secondary);
+}
+.form-check-input:focus-within{
+    box-shadow: none
+}
+.form-control:focus{
+    box-shadow: none;
+    border-color: var(--color-secondary);
+}
+</style>

@@ -80,46 +80,52 @@
           </div>
 
           <!-- Verfügbarkeit -->
-          <div v-if="availability[room.id] !== undefined" class="mt-3">
-            <span
-              v-if="availability[room.id]"
-              class="badge bg-success"
-            >
-              Verfügbar
-            </span>
-            <span
-              v-else
-              class="badge bg-danger"
-            >
-              Belegt
-            </span>
-          </div>
-          </div>
-
-          <!-- Button -->
-           <div class="room-button">
-            <div v-if="fromDate && toDate && availability[room.id] !== false">
-  <router-link
-    :to="{
-      path: `/booking/${room.id}`,
-      query: { from: fromDate, to: toDate }
-    }"
+          <div class="mt-3">
+    <span
+    v-if="availability[room.id] === true"
+    class="badge bg-success"
   >
-    <b-button
-  variant="primary"
-  class="mt-3 w-100"
-  @click="handleBooking(room.id, availability[room.id])"
->
-  Jetzt buchen
-</b-button>
-  </router-link>
-</div>
+    Verfügbar
+  </span>
 
-<div v-else>
-  <b-button variant="primary" class="mt-3 w-100 btn-disabled" disabled>
-    Jetzt buchen
-  </b-button>
-</div>
+  <span
+    v-else-if="availability[room.id] === false"
+    class="badge bg-danger"
+  >
+    Belegt
+  </span>
+
+  <span
+    v-else
+    class="badge bg-secondary"
+  >
+    Noch nicht geprüft
+  </span>
+          </div> </div>
+          <!-- Button -->
+         <div class="room-button">
+  <div v-if="fromDate && toDate && availability[room.id] === true">
+    <router-link
+      :to="{
+        path: `/booking/${room.id}`,
+        query: { from: fromDate, to: toDate }
+      }"
+    >
+      <b-button
+        variant="primary"
+        class="mt-3 w-100"
+        @click="handleBooking(room.id, availability[room.id])"
+      >
+        Jetzt buchen
+      </b-button>
+    </router-link>
+  </div>
+
+  <div v-else>
+    <b-button variant="primary" class="mt-3 w-100 btn-disabled" disabled>
+      Jetzt buchen
+    </b-button>
+  </div>
 </div>
         </b-card>
       </b-col>
@@ -142,9 +148,13 @@
 import { ref, computed, onMounted } from "vue"
 import axios from "axios"
 
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
 const rooms = ref([])
-const fromDate = ref(null)
-const toDate = ref(null)
+const fromDate = ref(today.toISOString().substr(0, 10))
+const toDate = ref(tomorrow.toISOString().substr(0, 10))
 const availability = ref({})
 const currentPage = ref(1)
 const perPage = 5
@@ -212,29 +222,23 @@ const checkAllAvailability = async () => {
     return
   }
 
-  const formattedFrom = formatDate(fromDate.value)
-  const formattedTo = formatDate(toDate.value)
+for (const room of rooms.value) {
+  const roomId = Number(room.id)
 
-  for (const room of rooms.value) {
   try {
     const { data } = await axios.get(
-      `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${room.id}/from/${formattedFrom}/to/${formattedTo}`
+      `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${room.id}/from/${fromDate.value}/to/${toDate.value}`
     )
 
-    availability.value[room.id] = data.available
+    availability.value[roomId] = data.available === true
+      ? true
+      : data.available === false
+        ? false
+        : undefined
+
   } catch (error) {
-    console.error(`Fehler beim Laden der Verfügbarkeit für Room ${room.id}:`, error)
+    console.error(`Fehler beim Laden für Room ${roomId}:`, error)
   }
-}  
 }
-
-//Datumsformat anpassen (11-11-25)
-const formatDate = (date) => {
-  const d = new Date(date)
-  const day = String(d.getDate()).padStart(2, "0")
-  const month = String(d.getMonth() + 1).padStart(2, "0")
-  const year = String(d.getFullYear()).slice(-2)
-  return `${day}-${month}-${year}`
 }
-
 </script>
