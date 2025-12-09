@@ -6,55 +6,64 @@
       <b-button variant="primary" @click="closeModal">OK</b-button>
     </b-modal>
 
-<!-- Booking Dates -->
-<b-form-group label="Ausgewählter Zeitraum">
-  <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
-    
-    <b-form-input
-      type="date"
-      v-model="localDateFrom"
-      class="w-100 w-sm-auto"
-    />
+    <!-- Booking Dates -->
+    <b-form-group label="Ausgewählter Zeitraum">
+      <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+        <b-form-input
+          type="date"
+          v-model="localDateFrom"
+          class="w-100 w-sm-auto"
+        />
 
-    <span class="mx-sm-2">bis</span>
+        <span class="mx-sm-2">bis</span>
 
-    <b-form-input
-      type="date"
-      v-model="localDateTo"
-      class="w-100 w-sm-auto"
-    />
+        <b-form-input
+          type="date"
+          v-model="localDateTo"
+          class="w-100 w-sm-auto"
+        />
 
-    <!-- Validate button -->
-    <b-button 
-      variant="primary" 
-      @click="validateDates"
-      class="w-100 w-sm-auto"
-    >
-      Prüfen
-    </b-button>
-
-  </div>
-</b-form-group>
+        <!-- Validate button -->
+        <b-button 
+          variant="primary" 
+          @click="validateDates"
+          class="w-100 w-sm-auto"
+        >
+          Prüfen
+        </b-button>
+      </div>
+    </b-form-group>
 
     <b-row>
-      <b-col>
-        <!-- User Info -->
-        <b-form-group label="Vorname">
+      <!-- First Name -->
+      <b-col cols="12" sm="6">
+        <b-form-group
+          label="Vorname"
+          :state="firstNameError ? false : null"
+          :invalid-feedback="firstNameError"
+        >
           <b-form-input
             placeholder="Vorname"
             :value="firstName"
             @input="$emit('update:firstName', $event)"
+            :state="firstNameError ? false : null"
             required
           />
         </b-form-group>
       </b-col>
 
-      <b-col>
-        <b-form-group label="Nachname">
+      <!-- Last Name -->
+      <b-col cols="12" sm="6">
+        <b-form-group
+          label="Nachname"
+          :state="lastNameError ? false : null"
+          :invalid-feedback="lastNameError"
+        >
           <b-form-input
             placeholder="Nachname"
             :value="lastName"
             @input="$emit('update:lastName', $event)"
+            :state="lastNameError ? false : null"
             required
           />
         </b-form-group>
@@ -62,18 +71,25 @@
     </b-row>
 
     <b-row>
+      <!-- Email -->
       <b-col cols="12" sm="6">
-        <b-form-group label="E-Mail">
+        <b-form-group
+          label="E-Mail"
+          :state="emailError ? false : null"
+          :invalid-feedback="emailError"
+        >
           <b-form-input
             placeholder="E-Mail"
             type="email"
             :value="email"
             @input="$emit('update:email', $event)"
+            :state="emailError ? false : null"
             required
           />
         </b-form-group>
       </b-col>
 
+      <!-- Date of Birth -->
       <b-col cols="12" sm="6">
         <b-form-group label="Geburtsdatum">
           <b-form-input
@@ -90,15 +106,15 @@
     <b-form-group label="Frühstück">
       <div class="d-flex gap-3">
         <b-form-radio
-            :checked="fruehstueck"
-            @change="$emit('update:fruehstueck', true)"
+          :checked="fruehstueck"
+          @change="$emit('update:fruehstueck', true)"
         >
           Ja
         </b-form-radio>
 
         <b-form-radio
-            :checked="!fruehstueck"
-            @change="$emit('update:fruehstueck', false)"
+          :checked="!fruehstueck"
+          @change="$emit('update:fruehstueck', false)"
         >
           Nein
         </b-form-radio>
@@ -108,7 +124,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch } from 'vue'
+import { defineProps, defineEmits, ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps({
@@ -168,12 +184,11 @@ async function isRoomAvailable(from, to) {
   }
 }
 
-// Button-based validation
+// Button-based validation for dates
 async function validateDates() {
   const from = localDateFrom.value
   const to = localDateTo.value
 
-  // Basic checks
   if (!from || !to) {
     showAlert("Bitte beide Daten auswählen.")
     return
@@ -184,24 +199,18 @@ async function validateDates() {
     return
   }
 
-  // Check availability
   const available = await isRoomAvailable(from, to)
-
   if (!available) {
     showAlert("Zimmer ist in diesem Zeitraum NICHT verfügbar.")
     return
   }
 
-  // Save to parent now that both dates are valid
   emit("update:dateFrom", from)
   emit("update:dateTo", to)
-
   updateUrl()
-
   showAlert("Zimmer ist in diesem Zeitraum VERFÜGBAR!")
 }
 
-// Update URL
 function updateUrl() {
   router.replace({
     query: {
@@ -211,10 +220,36 @@ function updateUrl() {
     }
   })
 }
+
+// FORM VALIDATION
+
+const emailError = ref("")
+const firstNameError = ref("")
+const lastNameError = ref("")
+
+function validateEmail(value) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return re.test(value)
+}
+
+// Watchers for real-time validation
+watch(() => props.email, val => {
+  if (!val) emailError.value = "E-Mail ist erforderlich."
+  else if (!validateEmail(val)) emailError.value = "Bitte eine gültige E-Mail-Adresse eingeben."
+  else emailError.value = ""
+})
+
+watch(() => props.firstName, val => {
+  firstNameError.value = val ? "" : "Vorname ist erforderlich."
+})
+
+watch(() => props.lastName, val => {
+  lastNameError.value = val ? "" : "Nachname ist erforderlich."
+})
 </script>
 
 <style>
-/*Styling for from inputs*/
+/* Styling for form inputs and radios */
 .form-check-input:checked{
     background-color: var(--color-primary);
     border-color: var(--color-secondary);
