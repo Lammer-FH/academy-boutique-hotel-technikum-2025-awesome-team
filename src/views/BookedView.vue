@@ -84,10 +84,10 @@
 
 <!-- CONTACT + DIRECTIONS + MAP -->
 <b-row class="mt-4 directions-row">
-  <!-- LEFT COLUMN: Contact + Directions -->
+  <!-- LEFT COLUMN: Contact + Directions + Maps Buttons -->
   <b-col cols="12" lg="6" class="left-col gap-1">
     <div class="left-content">
-      <!-- Kontakt -->
+      <!-- Contact -->
       <h5><strong>Kontakt</strong></h5>
       <p class="mb-1"><i class="bi bi-telephone-fill"></i> +43 1 234 56 78</p>
       <p class="mb-1"><i class="bi bi-envelope"></i> info@hotel-vue.at</p>
@@ -96,7 +96,7 @@
         <b-link href="/impressum">Impressum</b-link>.
       </p>
 
-      <!-- Anfahrt -->
+      <!-- Directions -->
       <h5 class="mt-4"><strong>Anfahrt</strong></h5>
       <p>
         Das <strong>Hotel Vue</strong> befindet sich im historischen Zentrum Wiens,
@@ -109,8 +109,8 @@
         • Wien Hauptbahnhof – 10 Minuten mit der U-Bahn
       </p>
 
-      <!-- Buttons -->
-        <div class="button-row mb-lg-0 mb-3">
+      <!-- Maps Buttons -->
+        <div class="mb-lg-0 mb-3">
   <b-button
     variant="primary"
     href="https://www.google.com/maps/place/Weihburggasse+9"
@@ -144,7 +144,7 @@
   </b-col>
 </b-row>
 
-		<!-- CTA -->
+		<!-- Return Homepage Button -->
 		<div class="text-center mt-5 fade-in">
 			<b-button variant="primary" size="lg" href="/" class="px-5 py-3 return-btn">
 				<i class="bi bi-house-door mr-2"></i>
@@ -160,7 +160,7 @@ defineProps({
 	id: String,
 });
 
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useBookingStore } from "../stores/booking";
 
@@ -176,6 +176,7 @@ const booking = computed(() => {
 	}
 	return null;
 });
+
 // watch the params of the route to fetch the data again
 watch(() => route.params.id, fetchData, { immediate: true });
 
@@ -196,13 +197,7 @@ async function fetchData(id) {
 }
 
 /**
- * Maps a raw booking API response into a simplified, frontend-friendly format.
- *
- * - Flattens booking fields
- * - Normalizes room data
- * - Deduplicates extras by name
- * - Converts `available` from number → boolean
- * - Simplifies guest objects
+ * Map API response
  *
  * @param {Object} apiData - The raw booking object returned by the backend API.
  * @param {number} apiData.id
@@ -232,6 +227,7 @@ async function fetchData(id) {
  * @returns {Array<{name: string, available: boolean}>} return.room.extras
  * @returns {Array<{id: number, firstname: string, lastname: string, email: string, birthdate: string}>} return.guests
  */
+
 function mapBooking(apiData) {
 	return {
 		id: apiData.id,
@@ -259,7 +255,6 @@ function mapBooking(apiData) {
 			),
 		},
 
-
 		guests: apiData.guests.map(g => ({
 			id: g.id,
 			firstname: g.firstname,
@@ -286,7 +281,6 @@ const icons = {
 
 <style scoped>
 /* --- Booking information card styles --- */
-
 .text-gradient {
   background: linear-gradient(90deg, var(--color-secondary), var(--color-primary1));
   -webkit-background-clip: text;
@@ -348,7 +342,6 @@ const icons = {
 }
 
 /* --- Map, directions, and contact section --- */
-
 /* Map container styling */
 .map-container {
   border-radius: 12px;
@@ -385,11 +378,6 @@ const icons = {
   .map-container iframe {
     flex: 1;
   }
-
-  /* Remove bottom margin on buttons for desktop */
-  .button-row {
-    margin-bottom: 0;
-  }
 }
 
 /* Mobile layout: stacked columns */
@@ -402,11 +390,6 @@ const icons = {
     width: 100%;
     height: 50vh; /* adjust if you want bigger map */
     margin-top: 1rem; /* gap between buttons and map */
-  }
-
-  /* Add spacing below buttons */
-  .button-row {
-    margin-bottom: 1rem;
   }
 }
 
