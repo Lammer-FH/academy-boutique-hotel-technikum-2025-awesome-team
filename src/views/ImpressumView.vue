@@ -9,7 +9,7 @@
           </p>
           <p class="mb-1"><strong>Hotelname:</strong> Hotel Vue</p>
           <p class="mb-1"><strong>Inhaber:</strong> Vlad von Nacht</p>
-          <p class="mb-1"><strong>Adresse:</strong> Burgstraße 7, 1010 Wien, Österreich</p>
+          <p class="mb-1"><strong>Adresse:</strong> Weihburggasse 9, 1010 Wien, Österreich</p>
           <p class="mb-1"><strong>Kontakt:</strong></p>
           <p class="mb-1">Telefon: +43 1 234 56 78</p>
           <p class="mb-1">E-Mail: <a href="mailto:info@hotel-vue.at">info@hotel-vue.at</a></p>
