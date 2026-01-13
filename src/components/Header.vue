@@ -1,18 +1,41 @@
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 import AuthModal from './AuthModal.vue'
 
 export default {
   name: 'Header',
   components: { AuthModal },
   setup() {
-    const isUserMenuOpen = ref(false)
 
-    const toggleUserMenu = () => {
-      isUserMenuOpen.value = !isUserMenuOpen.value
+    const auth = useAuthStore()
+    const showAuthModal = ref(false)
+
+    const displayName = computed(() => {
+      if (!auth.user) return ''
+      return `${auth.user.firstname ?? ''} ${auth.user.lastname ?? ''}`.trim()
+    })
+
+    const openAuthModal = () => {
+      showAuthModal.value = true
     }
 
-    return { isUserMenuOpen, toggleUserMenu }
+    const closeAuthModal = () => {
+      showAuthModal.value = false
+    }
+
+    const logout = () => {
+      auth.logout()
+    }
+
+    return {
+      auth,
+      showAuthModal,
+      openAuthModal,
+      closeAuthModal,
+      displayName,
+      logout
+    }
   }
 }
 </script>
@@ -41,22 +64,43 @@ export default {
           <b-nav-item to="/about" tag="router-link" class="nav-animated">About</b-nav-item>
           <b-nav-item to="/impressum" tag="router-link" class="nav-animated">Impressum</b-nav-item>
 
-          <!-- User icon opens modal -->
-          <b-nav-item @click="$refs.authModal.showModal = true" class="user-icon nav-animated">
+          <!-- User icon -->
+          <b-nav-item
+            v-if="!auth.isAuthenticated"
+            @click="openAuthModal"
+            class="user-icon nav-animated"
+          >
             <i class="bi bi-person"></i> User
           </b-nav-item>
-        </b-navbar-nav>
 
-        
+          <!-- User info & logout -->
+          <template v-else>
+            <b-nav-item class="nav-animated user-icon">
+              <i class="bi bi-person-check"></i> {{ displayName || 'User' }}
+            </b-nav-item>
+
+            <b-nav-item
+              @click="logout"
+              class="user-icon nav-animated"
+            >
+              <i class="bi bi-box-arrow-right"></i> Logout
+            </b-nav-item>
+          </template>
+
+        </b-navbar-nav>
       </b-collapse>
     </b-navbar>
 
     <!-- Auth modal -->
-    <AuthModal ref="authModal" />
+    <AuthModal
+      v-if="showAuthModal"
+      @close="closeAuthModal"
+    />
   </header>
 </template>
 
 <style scoped>
+/* ⚠️ NICHT VERÄNDERT */
 header {
   width: 100%;
   position: fixed;

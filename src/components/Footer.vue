@@ -6,15 +6,10 @@ export default {
   setup() {
     const showFooter = ref(false)
 
-    // Function to check if mouse is near bottom
     const handleMouseMove = (e) => {
-      const threshold = 50 // px from bottom
+      const threshold = 50
       const windowHeight = window.innerHeight
-      if (windowHeight - e.clientY <= threshold) {
-        showFooter.value = true
-      } else {
-        showFooter.value = false
-      }
+      showFooter.value = windowHeight - e.clientY <= threshold
     }
 
     onMounted(() => {
@@ -35,9 +30,11 @@ export default {
     class="modern-footer"
     :class="{ 'footer-visible': showFooter }"
   >
-    <p class="text-black text-uppercase fw-bold mb-1 big">© Hotel Vue</p>
-    <div class="footer-content">
-      <p class="mb-1 text-black small">Follow us on:</p>
+    <div class="footer-row">
+      <p class="text-black text-uppercase fw-bold mb-1 big">© Hotel Vue</p>
+
+      <p class="  text-black fw-bold mb-1 big follow-label">Follow us on:</p>
+
       <div class="social-icons">
         <a href="https://facebook.com" target="_blank" aria-label="Facebook" class="facebook">
           <i class="fab fa-facebook-f fa-2x"></i>
@@ -66,33 +63,42 @@ export default {
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  text-align: center;
   width: 100%;
   position: fixed;
-  bottom: -100px; /* hide by default */
+  bottom: -100px;
   left: 0;
-  padding: 0.1rem 0.9rem;
+  padding: 0.35rem 1rem; /* slightly smaller footer height */
   font-size: 13px;
   transition: bottom 0.3s ease;
   z-index: 1000;
 }
 
 .footer-visible {
-  bottom: 0; /* slide up when visible */
+  bottom: 0;
 }
 
-.footer-content {
+/* NEW — everything in one line */
+.footer-row {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
+  justify-content: center;
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.follow-label {
+  margin: 0;
+}
+
+/* Disable old stacked layout */
+.footer-content {
+  display: none;
 }
 
 .social-icons {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin-top: 0.3rem;
 }
 
 .social-icons a {
@@ -116,4 +122,5 @@ export default {
 .twitter:hover i { color: #444; }
 .google:hover i { color: #ff6b57; }
 .whatsapp:hover i { color: #4fff8c; }
+
 </style>
