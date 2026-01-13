@@ -16,7 +16,11 @@ const registerForm = ref({
 })
 
 async function handleLogin() {
+  error.value = ''
+  message.value = ''
+
   const success = await auth.login(loginForm.value)
+
   if (success) {
     message.value = 'Login erfolgreich ✅'
     setTimeout(() => emit('close'), 800)
@@ -24,6 +28,7 @@ async function handleLogin() {
     error.value = auth.error
   }
 }
+
 
 async function handleRegister() {
   if (registerForm.value.password !== registerForm.value.confirm) {
@@ -52,7 +57,8 @@ function close() {
 </script>
 
 <template>
-  <div class="modal-backdrop d-block"></div>
+  <div class="modal-backdrop d-block bg-dark bg-opacity-25 backdrop-blur"></div>
+
 
   <div class="modal d-block">
     <div class="modal-dialog modal-dialog-centered">
