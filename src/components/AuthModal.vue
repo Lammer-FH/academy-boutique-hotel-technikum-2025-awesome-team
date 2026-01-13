@@ -8,7 +8,6 @@ const auth = useAuthStore()
 const isLogin = ref(true)
 const message = ref('')
 const error = ref('')
-
 const loginForm = ref({ email: '', password: '' })
 
 const registerForm = ref({
