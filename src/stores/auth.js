@@ -2,8 +2,32 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import axios from 'axios'
 
+const API_BASE = 'https://boutique-hotel.helmuth-lammer.at/api/v1'
+
 /**
- * Decode JWT payload (Base64)
+ * Axios instance
+ */
+const api = axios.create({
+  baseURL: API_BASE,
+  headers: {
+    Accept: 'application/json'
+  }
+})
+
+/**
+ * JWT Interceptor
+ * → erfüllt U7 DoD
+ */
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+/**
+ * Decode JWT payload
  */
 function decodeJwt(token) {
   try {
@@ -17,69 +41,63 @@ function decodeJwt(token) {
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token'))
   const user = ref(JSON.parse(localStorage.getItem('user')))
-  const error = ref(null)
   const loading = ref(false)
+  const error = ref(null)
 
   const isAuthenticated = computed(() => !!token.value)
 
-  function saveSession(tokenValue) {
-  token.value = tokenValue
+  function saveSession(jwt) {
+    token.value = jwt
 
-  const decoded = decodeJwt(tokenValue)
+    const decoded = decodeJwt(jwt)
+    user.value = decoded
+      ? { clientId: decoded.sub }
+      : null
 
-  user.value = decoded
-    ? { clientId: decoded.sub } // email from JWT
-    : null
-
-  localStorage.setItem('token', tokenValue)
-  localStorage.setItem('user', JSON.stringify(user.value))
-}
-
+    localStorage.setItem('token', jwt)
+    localStorage.setItem('user', JSON.stringify(user.value))
+  }
 
   async function login({ email, password }) {
-  loading.value = true
-  error.value = null
+    loading.value = true
+    error.value = null
 
-  try {
-    const res = await axios.post(
-      'https://boutique-hotel.helmuth-lammer.at/api/v1/login',
-      {
+    try {
+      const res = await api.post('/login', {
         clientId: email.trim(),
         secret: password
-      },
-      {
-        headers: { Accept: 'application/json' }
-      }
-    )
+      })
 
-    // 🔹 IMPORTANT: if API returns { token: '...' }, use res.data.token
-    const jwt = typeof res.data === 'string' ? res.data : res.data.token
-    if (!jwt) throw new Error("No token returned")
+      const jwt = typeof res.data === 'string'
+        ? res.data
+        : res.data.token
 
-    saveSession(jwt)
-    return true
-  } catch (err) {
-    console.error("LOGIN ERROR:", err)
-    error.value =
-      err.response?.data?.message || 'E-Mail oder Passwort falsch'
-    return false
-  } finally {
-    loading.value = false
+      if (!jwt) throw new Error('No token returned')
+
+      saveSession(jwt)
+      return true
+    } catch (err) {
+      error.value =
+        err.response?.data?.message ||
+        'E-Mail oder Passwort falsch'
+      return false
+    } finally {
+      loading.value = false
+    }
   }
-}
-
-
 
   async function register(data) {
     loading.value = true
     error.value = null
 
     try {
-      await axios.post(
-        'https://boutique-hotel.helmuth-lammer.at/api/v1/register',
-        data,
-        { headers: { Accept: 'application/json' } }
-      )
+      await api.post('/register', {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email,
+        username: data.email, // 🔹 REQUIRED by API
+        password: data.password
+      })
       return true
     } catch (err) {
       error.value =
@@ -101,11 +119,12 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     token,
     user,
-    error,
     loading,
+    error,
     isAuthenticated,
     login,
     register,
-    logout
+    logout,
+    api // export für weitere Calls
   }
 })
