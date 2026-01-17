@@ -42,6 +42,18 @@ import Footer from './components/Footer.vue'
   border-radius: 0.5rem;
 }
 
+.room-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.room-content {
+  flex-grow: 1;        
+  display: flex;
+  flex-direction: column;
+}
+
+
 :deep(.dp__input) {
   border: 1px solid #ccc;
   border-radius: 0.375rem;
