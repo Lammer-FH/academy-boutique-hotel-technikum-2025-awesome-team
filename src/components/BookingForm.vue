@@ -51,33 +51,47 @@ async function validateDates() {
     </b-modal>
 
     <b-form-group label="Ausgewählter Zeitraum">
-      <div class="d-flex gap-2 flex-wrap">
-        <b-form-input type="date" v-model="store.fromDate" />
-        <span>bis</span>
-        <b-form-input type="date" v-model="store.toDate" />
-        <b-button variant="primary" @click="validateDates">Prüfen</b-button>
-      </div>
-    </b-form-group>
+  <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+    <b-form-input type="date" v-model="store.fromDate" />
+    <span class="d-none d-sm-inline">bis</span>
+    <b-form-input type="date" v-model="store.toDate" />
+    <b-button variant="primary" @click="validateDates">Prüfen</b-button>
+  </div>
+</b-form-group>
 
-    <b-form-group label="Vorname">
-      <b-form-input v-model="store.firstName" />
-    </b-form-group>
+ <div class="row g-2">
+    <div class="col-12 col-sm-6">
+      <b-form-group label="Vorname">
+        <b-form-input v-model="store.firstName" />
+      </b-form-group>
+    </div>
 
-    <b-form-group label="Nachname">
-      <b-form-input v-model="store.lastName" />
-    </b-form-group>
+    <div class="col-12 col-sm-6">
+      <b-form-group label="Nachname">
+        <b-form-input v-model="store.lastName" />
+      </b-form-group>
+    </div>
+  </div>
 
+<div class="row g-2">
+    <div class="col-12 col-sm-6">
     <b-form-group label="E-Mail">
       <b-form-input type="email" v-model="store.email" />
     </b-form-group>
+</div>
 
+    <div class="col-12 col-sm-6">
     <b-form-group label="Geburtsdatum">
       <b-form-input type="date" v-model="store.dob" />
     </b-form-group>
+</div>
+</div>
 
     <b-form-group label="Frühstück">
+        <div class="d-flex align-items-start gap-4">
       <b-form-radio v-model="store.fruehstueck" :value="true">Ja</b-form-radio>
       <b-form-radio v-model="store.fruehstueck" :value="false">Nein</b-form-radio>
+      </div>
     </b-form-group>
   </b-form>
 </template>
