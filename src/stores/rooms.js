@@ -41,7 +41,12 @@ export const useRoomsStore = defineStore('rooms', () => {
     try {
       const { data } = await api.get('/rooms')
       rooms.value = data.map(room => ({
-        ...room,
+        id: room.id,
+        roomNumber: room.roomsNumber,
+        roomName: room.roomsName,
+
+        beds: room.beds,
+        pricePerNight: room.pricePerNight,
         extras: mapRoomExtras(room.extras)
       }))
     } catch {
