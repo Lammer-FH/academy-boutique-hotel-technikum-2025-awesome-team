@@ -51,12 +51,9 @@ async function submitBooking() {
         </div>
 
         <div class="modal-body">
-            <p><b>Zimmer {{ store.roomId }} – {{ store.roomName }}:</b></p>
-            <p><b>Zeitraum:</b> {{ store.fromDate }} – {{ store.toDate }}</p>
-            <p><b>Frühstück:</b> {{ store.fruehstueck ? "Ja" : "Nein" }}</p>
           <p><b>Name:</b> {{ store.firstName }} {{ store.lastName }}</p>
           <p><b>E-Mail:</b> {{ store.email }}</p>
-          <p><b>Geburtsdatum:</b> {{ store.dob }}</p>
+          <p><b>Zeitraum:</b> {{ store.fromDate }} – {{ store.toDate }}</p>
         </div>
 
         <div class="modal-footer">
