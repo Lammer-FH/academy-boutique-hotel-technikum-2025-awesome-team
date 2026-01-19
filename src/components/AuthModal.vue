@@ -63,13 +63,11 @@ async function handleRegister() {
   error.value = ''
   message.value = ''
 
-  // Email format check
   if (!isValidEmail(registerForm.value.email)) {
     error.value = 'Please enter a valid email address.'
     return
   }
 
-  // Password confirm check
   if (registerForm.value.password !== registerForm.value.confirm) {
     error.value = 'Passwords do not match.'
     return
@@ -78,19 +76,13 @@ async function handleRegister() {
   const success = await auth.register(registerForm.value)
 
   if (success) {
-    //  Show success message first
-    message.value = 'Successfully registered'
-    error.value = ''
-
-    // Keep the message visible for 1.5s before switching to login
-    setTimeout(() => {
-      isLogin.value = true
-      message.value = '' // optional: clear the message after switching
-    }, 1500)
+    message.value = 'Successfully registered & logged in ✅'
+    setTimeout(() => emit('close'), 800)
   } else {
     error.value = auth.error
   }
 }
+
 
 
 // Close modal
