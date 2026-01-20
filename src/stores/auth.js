@@ -1,108 +1,67 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
-
-/**
- * Decode JWT payload (Base64)
- */
-function decodeJwt(token) {
-  try {
-    const payload = token.split('.')[1]
-    return JSON.parse(atob(payload))
-  } catch {
-    return null
-  }
-}
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref(localStorage.getItem('token'))
   const user = ref(JSON.parse(localStorage.getItem('user')))
   const error = ref(null)
-  const loading = ref(false)
 
-  const isAuthenticated = computed(() => !!token.value)
+  const isAuthenticated = computed(() => !!user.value)
 
-  function saveSession(tokenValue) {
-  token.value = tokenValue
-
-  const decoded = decodeJwt(tokenValue)
-
-  user.value = decoded
-    ? { clientId: decoded.sub } // email from JWT
-    : null
-
-  localStorage.setItem('token', tokenValue)
-  localStorage.setItem('user', JSON.stringify(user.value))
-}
-
-
-  async function login({ email, password }) {
-  loading.value = true
-  error.value = null
-
-  try {
-    const res = await axios.post(
-      'https://boutique-hotel.helmuth-lammer.at/api/v1/login',
-      {
-        clientId: email.trim(),
-        secret: password
-      },
-      {
-        headers: { Accept: 'application/json' }
-      }
-    )
-
-    // 🔹 IMPORTANT: if API returns { token: '...' }, use res.data.token
-    const jwt = typeof res.data === 'string' ? res.data : res.data.token
-    if (!jwt) throw new Error("No token returned")
-
-    saveSession(jwt)
-    return true
-  } catch (err) {
-    console.error("LOGIN ERROR:", err)
-    error.value =
-      err.response?.data?.message || 'E-Mail oder Passwort falsch'
-    return false
-  } finally {
-    loading.value = false
-  }
-}
-
-
-
-  async function register(data) {
-    loading.value = true
+  async function login(credentials) {
     error.value = null
 
-    try {
-      await axios.post(
-        'https://boutique-hotel.helmuth-lammer.at/api/v1/register',
-        data,
-        { headers: { Accept: 'application/json' } }
-      )
+  
+    const savedUser = JSON.parse(localStorage.getItem('registeredUser'))
+
+    if (
+      savedUser &&
+      savedUser.email === credentials.email &&
+      savedUser.password === credentials.password
+    ) {
+      user.value = savedUser
+      localStorage.setItem('user', JSON.stringify(savedUser))
+      window.location.reload()
       return true
-    } catch (err) {
-      error.value =
-        err.response?.data?.message ||
-        'Registrierung fehlgeschlagen'
-      return false
-    } finally {
-      loading.value = false
     }
+
+    error.value = 'Invalid login'
+    return false
+  }
+
+  async function register(data) {
+    error.value = null
+
+    // Simulated backend register
+    const newUser = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      password: data.password
+    }
+
+    // save user (mock backend)
+    localStorage.setItem('registeredUser', JSON.stringify(newUser))
+
+    //AUTO LOGIN AFTER REGISTER
+    user.value = newUser
+    localStorage.setItem('user', JSON.stringify(newUser))
+    window.location.reload()
+    return true
   }
 
   function logout() {
-    token.value = null
     user.value = null
-    localStorage.removeItem('token')
     localStorage.removeItem('user')
+    sessionStorage.clear();
+
+  // reload the page
+    window.location.reload();
+    
   }
 
   return {
-    token,
     user,
     error,
-    loading,
     isAuthenticated,
     login,
     register,
