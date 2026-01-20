@@ -1,6 +1,4 @@
 // src/services/api.js
-
-
 import axios from 'axios'
 
 const api = axios.create({
@@ -10,6 +8,7 @@ const api = axios.create({
   }
 })
 
+// Attach token from localStorage (safer than calling store inside interceptor)
 api.interceptors.request.use((config) => {
   try {
     const token = localStorage.getItem('token')
@@ -17,7 +16,9 @@ api.interceptors.request.use((config) => {
       config.headers = config.headers || {}
       config.headers.Authorization = `Bearer ${token}`
     }
-  } catch (e) {}
+  } catch (e) {
+    // ignore
+  }
   return config
 }, (error) => Promise.reject(error))
 
