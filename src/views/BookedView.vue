@@ -167,115 +167,16 @@ import { useBookingStore } from "../stores/booking";
 const route = useRoute();
 const store = useBookingStore();
 
-const loading = ref(false);
-const data = ref(null);
-const error = ref(null);
-const booking = computed(() => {
-	if (data.value) {
-		return mapBooking(data.value);
-	}
-	return null;
-});
+const booking = computed(() => store.booking)
+const loading = computed(() => store.loading)
+const error = computed(() => store.error)
 
-// watch the params of the route to fetch the data again
-watch(() => route.params.id, fetchData, { immediate: true });
+watch(
+  () => route.params.id,
+  (id) => store.fetchBooking(id),
+  { immediate: true }
+)
 
-async function fetchData(id) {
-	const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/bookings/${id}`;
-
-	error.value = booking.value = null;
-	loading.value = true;
-
-	try {
-		const response = await fetch(url);
-		data.value = await response.json();
-	} catch (error) {
-		error.value = error.toString();
-	} finally {
-		loading.value = false;
-	}
-}
-
-/**
- * Map API response
- *
- * @param {Object} apiData - The raw booking object returned by the backend API.
- * @param {number} apiData.id
- * @param {string} apiData.bookingId
- * @param {string} apiData.from
- * @param {string} apiData.to
- * @param {Object} apiData.room
- * @param {number} apiData.room.id
- * @param {string} apiData.room.roomNumber
- * @param {string} apiData.room.roomName
- * @param {number} apiData.room.beds
- * @param {number} apiData.room.pricePerNight
- * @param {Array<Object>} apiData.room.extras
- * @param {Array<Object>} apiData.guests
- *
- * @returns {Object} A fully normalized booking object.
- * @returns {number} return.id
- * @returns {string} return.bookingId
- * @returns {string} return.from
- * @returns {string} return.to
- * @returns {Object} return.room
- * @returns {number} return.room.id
- * @returns {string} return.room.number
- * @returns {string} return.room.name
- * @returns {number} return.room.beds
- * @returns {number} return.room.pricePerNight
- * @returns {Array<{name: string, available: boolean}>} return.room.extras
- * @returns {Array<{id: number, firstname: string, lastname: string, email: string, birthdate: string}>} return.guests
- */
-
-function mapBooking(apiData) {
-	return {
-		id: apiData.id,
-		bookingId: apiData.bookingId,
-		from: apiData.from,
-		to: apiData.to,
-
-		room: {
-			id: apiData.room.id,
-			number: apiData.room.roomNumber,
-			name: apiData.room.roomName,
-			beds: apiData.room.beds,
-			pricePerNight: apiData.room.pricePerNight,
-
-			// Deduplicate extras by name and convert "available" to boolean
-			extras: Object.values(
-				apiData.room.extras.reduce((acc, extra) => {
-					acc[extra.name] = {
-						name: extra.name,
-						icon: icons[extra.name] || "bi bi-question-circle",
-						available: Boolean(extra.available),
-					};
-					return acc;
-				}, {})
-			),
-		},
-
-		guests: apiData.guests.map(g => ({
-			id: g.id,
-			firstname: g.firstname,
-			lastname: g.lastname,
-			email: g.email,
-			birthdate: g.birthdate,
-		})),
-	};
-}
-
-// Icon map
-const icons = {
-	bathroom: "bi bi-droplet",
-	minibar: "bi bi-cup-straw",
-	television: "bi bi-tv",
-	livingroom: "bi bi-house-door",
-	aircondition: "bi bi-snow",
-	wifi: "bi bi-wifi",
-	breakfast: "bi bi-egg-fried",
-	"handicapped accessible": "fa-solid fa-wheelchair",
-};
 </script>
 
 

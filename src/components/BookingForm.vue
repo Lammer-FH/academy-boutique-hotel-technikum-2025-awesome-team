@@ -126,53 +126,30 @@ onMounted(() => {
 
 // Modal state
 const showModal = ref(false)
-const modalMessage = ref("")
+const modalMessage = ref('')
 
-function showAlert(message) {
-  modalMessage.value = message
+function showAlert(msg) {
+  modalMessage.value = msg
   showModal.value = true
 }
 
-function closeModal() {
-  showModal.value = false
-}
-
-// API call
-async function isRoomAvailable() {
-  try {
-    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${store.roomId}/from/${store.fromDate}/to/${store.toDate}`
-    const res = await fetch(url)
-    const data = await res.json()
-    return data.available
-  } catch (err) {
-    console.error("Fehler beim Prüfen der Verfügbarkeit", err)
-    return false
-  }
-}
-
-// Button-based validation for dates
 async function validateDates() {
   if (!store.fromDate || !store.toDate) {
-    showAlert("Bitte beide Daten auswählen.")
+    showAlert('Bitte beide Daten auswählen.')
     return
   }
 
   if (store.fromDate > store.toDate) {
-    showAlert("Anreisedatum darf NICHT nach dem Abreisedatum liegen.")
+    showAlert('Anreisedatum darf nicht nach dem Abreisedatum liegen.')
     return
   }
 
-  const available = await isRoomAvailable()
+  const available = await store.checkAvailability()
   if (!available) {
-    showAlert("Zimmer ist in diesem Zeitraum NICHT verfügbar.")
+    showAlert('Zimmer ist in diesem Zeitraum nicht verfügbar.')
     return
   }
 
-  updateUrl()
-  showAlert("Zimmer ist in diesem Zeitraum VERFÜGBAR!")
-}
-
-function updateUrl() {
   router.replace({
     query: {
       ...router.currentRoute.value.query,

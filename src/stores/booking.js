@@ -1,55 +1,111 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import api from '@/services/api'
 
 export const useBookingStore = defineStore('booking', () => {
-    // **Guest Info**
-    const firstName = ref('')
-    const lastName = ref('')
-    const email = ref('')
-    const dob = ref('')
-    const fruehstueck = ref(false)
+  // Guest input
+  const firstName = ref('')
+  const lastName = ref('')
+  const email = ref('')
+  const dob = ref('')
+  const fruehstueck = ref(false)
 
-    // **Booking Info**
-    const fromDate = ref('')
-    const toDate = ref('')
-    const roomId = ref('')
-    const roomNumber = ref('')
-    const roomName = ref('')
-    const roomBeds = ref(0)
-    const roomPricePerNight = ref(0)
-    const roomExtras = ref([])
+  // Booking data
+  const fromDate = ref('')
+  const toDate = ref('')
+  const roomId = ref(null)
 
-    // Reset function
-    function resetBooking() {
-        firstName.value = ''
-        lastName.value = ''
-        email.value = ''
-        dob.value = ''
-        fruehstueck.value = false
-        fromDate.value = ''
-        toDate.value = ''
-        roomId.value = ''
-        roomNumber.value = ''
-        roomName.value = ''
-        roomBeds.value = 0
-        roomPricePerNight.value = 0
-        roomExtras.value = []
+  // Result / state
+  const booking = ref(null)
+  const bookingId = ref(null)
+  const loading = ref(false)
+  const error = ref(null)
+
+  function setDates(from, to) {
+    fromDate.value = from
+    toDate.value = to
+  }
+
+  async function checkAvailability() {
+    if (!roomId.value || !fromDate.value || !toDate.value) return false
+
+    const { data } = await api.get(
+      `/room/${roomId.value}/from/${fromDate.value}/to/${toDate.value}`
+    )
+
+    return data.available === true
+  }
+
+  async function submitBooking() {
+    loading.value = true
+    error.value = null
+
+    try {
+      const { data } = await api.post(
+        `/room/${roomId.value}/from/${fromDate.value}/to/${toDate.value}`,
+        {
+          firstname: firstName.value,
+          lastname: lastName.value,
+          email: email.value,
+          birthdate: dob.value
+        }
+      )
+
+      bookingId.value = data.id
+      return data.id
+    } catch (err) {
+      error.value = 'Fehler beim Absenden der Buchung'
+      throw err
+    } finally {
+      loading.value = false
     }
+  }
 
-    return {
-        firstName,
-        lastName,
-        email,
-        dob,
-        fruehstueck,
-        fromDate,
-        toDate,
-        roomId,
-        roomNumber,
-        roomName,
-        roomBeds,
-        roomPricePerNight,
-        roomExtras,
-        resetBooking
+  async function fetchBooking(id) {
+    loading.value = true
+    error.value = null
+    try {
+      const { data } = await api.get(`/bookings/${id}`)
+      booking.value = data
+    } catch (err) {
+      error.value = err.message || 'Buchung konnte nicht geladen werden'
+    } finally {
+      loading.value = false
     }
+  }
+
+  function resetBooking() {
+    booking.value = null
+    bookingId.value = null
+    firstName.value = ''
+    lastName.value = ''
+    email.value = ''
+    dob.value = ''
+    fruehstueck.value = false
+    fromDate.value = ''
+    toDate.value = ''
+    roomId.value = null
+  }
+
+  return {
+    // states
+    firstName,
+    lastName,
+    email,
+    dob,
+    fruehstueck,
+    fromDate,
+    toDate,
+    roomId,
+    booking,
+    bookingId,
+    loading,
+    error,
+    // actions
+    setDates,
+    checkAvailability,
+    submitBooking,
+    fetchBooking,
+    resetBooking
+  }
 })

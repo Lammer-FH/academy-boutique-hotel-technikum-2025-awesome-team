@@ -1,46 +1,36 @@
 <template>
   <b-container class="rooms-view mt-120 mb-5">
     <h2 class="text-center mb-4">Unsere Zimmer</h2>
-
     <p>Wählen Sie hier Ihre Ruhestätte...</p>
 
-     <b-row class="mb-4 justify-content-center">
-    <b-col cols="12" md="3">
-      <label for="fromDate" class="form-label">Anreise</label>
-      <b-form-input
-        id="fromDate"
-        type="date"
-        v-model="fromDate"
-        class="mb-3"
+    <!-- Date Picker -->
+    <b-row class="mb-4 justify-content-center">
+      <b-col cols="12" md="3">
+        <label class="form-label">Anreise</label>
+        <b-form-input type="date" v-model="fromDate" />
+      </b-col>
+
+      <b-col cols="12" md="3">
+        <label class="form-label">Abreise</label>
+        <b-form-input type="date" v-model="toDate" />
+      </b-col>
+    </b-row>
+
+    <!-- Actions -->
+    <div class="primary-bar d-flex flex-column align-items-center gap-3 py-3 mb-4">
+      <b-button variant="primary" @click="checkAllAvailability">
+        Verfügbarkeit prüfen
+      </b-button>
+
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="rooms.length"
+        :per-page="perPage"
+        size="sm"
       />
-    </b-col>
+    </div>
 
-    <b-col cols="12" md="3">
-      <label for="toDate" class="form-label">Abreise</label>
-      <b-form-input
-        id="toDate"
-        type="date"
-        v-model="toDate"
-        class="mb-3"
-      />
-    </b-col>
-  </b-row>
-
-  <div class="primary-bar d-flex flex-column justify-content-center align-items-center gap-3 py-3 mb-4">
-    <b-button variant="primary" class="check-btn" @click="checkAllAvailability">
-      Verfügbarkeit prüfen
-    </b-button>
-
-    <b-pagination
-      v-model="currentPage"
-      :total-rows="rooms.length"
-      :per-page="perPage"
-      size="sm"
-      class="pagination"
-    />
-  </div>
-
-<!-- Zimmerliste -->
+    <!-- Room List -->
     <b-row class="g-4 justify-content-center">
       <b-col
         v-for="room in paginatedRooms"
@@ -49,196 +39,128 @@
         md="6"
         lg="4"
       >
-        <b-card
-          class="h-100 shadow-sm room-card"
-          :title="`Zimmer ${room.roomsNumber} – ${room.roomsName}`"
-        >
-        <div class="room-content">
-          <!-- Zimmerbild -->
+        <b-card class="room-card h-100 shadow-sm d-flex flex-column">
+          <!-- Image -->
           <b-card-img
             :src="`/images/rooms/${room.id}.jpg`"
             alt="Zimmerbild"
             class="room-image"
           />
 
-          <!-- Preis & Betten, <1: Bett, >1 Betten? -->
-          <b-card-text class="mt-3">
-            <strong>{{ room.beds }}</strong> Bett(en) <br />
-            <strong>{{ room.pricePerNight }} €</strong> / Nacht
-          </b-card-text>
+          <!-- Content -->
+          <div class="flex-grow-1 p-3">
+            <h5>Zimmer {{ room.roomNumber }} – {{ room.roomName }}</h5>
 
-          <!-- Extras mit Icons -->
-          <div class="d-flex flex-wrap gap-2 mt-2">
-            <span
-              v-for="(extra, index) in roomExtras(room)"
-              :key="index"
-              class="d-flex align-items-center gap-1 text-secondary"
-            >
-              <i :class="extra.icon"></i>
-              {{ extra.label }}
-            </span>
+            <p class="mb-2">
+              <strong>{{ room.beds }}</strong> Bett(en)<br />
+              <strong>{{ room.pricePerNight }} €</strong> / Nacht
+            </p>
+
+            <!-- Extras -->
+            <div class="d-flex flex-wrap gap-2 mt-2">
+              <span
+                v-for="extra in room.extras"
+                :key="extra.key"
+                class="d-flex align-items-center gap-1 text-secondary"
+              >
+                <i :class="extra.icon"></i>
+                {{ extra.label }}
+              </span>
+            </div>
+
+            <!-- Availability -->
+            <div class="mt-3">
+              <span
+                v-if="availability[room.id] === true"
+                class="badge bg-success"
+              >
+                Verfügbar
+              </span>
+              <span
+                v-else-if="availability[room.id] === false"
+                class="badge bg-danger"
+              >
+                Belegt
+              </span>
+              <span v-else class="badge bg-secondary">
+                Noch nicht geprüft
+              </span>
+            </div>
           </div>
 
-          <!-- Verfügbarkeit -->
-          <div class="mt-3">
-    <span
-    v-if="availability[room.id] === true"
-    class="badge bg-success"
-  >
-    Verfügbar
-  </span>
+          <!-- Action -->
+          <div class="p-3 pt-0">
+            <router-link
+              v-if="fromDate && toDate && availability[room.id] === true"
+              :to="{
+                path: `/booking/${room.id}`,
+                query: { from: fromDate, to: toDate }
+              }"
+            >
+              <b-button variant="primary" class="w-100">
+                Jetzt buchen
+              </b-button>
+            </router-link>
 
-  <span
-    v-else-if="availability[room.id] === false"
-    class="badge bg-danger"
-  >
-    Belegt
-  </span>
-
-  <span
-    v-else
-    class="badge bg-secondary"
-  >
-    Noch nicht geprüft
-  </span>
-          </div> </div>
-          <!-- Button -->
-         <div class="room-button">
-  <div v-if="fromDate && toDate && availability[room.id] === true">
-    <router-link
-      :to="{
-        path: `/booking/${room.id}`,
-        query: { from: fromDate, to: toDate }
-      }"
-    >
-      <b-button
-        variant="primary"
-        class="mt-3 w-100"
-        @click="handleBooking(room.id, availability[room.id])"
-      >
-        Jetzt buchen
-      </b-button>
-    </router-link>
-  </div>
-
-  <div v-else>
-    <b-button variant="primary" class="mt-3 w-100 btn-disabled" disabled>
-      Jetzt buchen
-    </b-button>
-  </div>
-</div>
+            <b-button
+              v-else
+              variant="primary"
+              class="w-100"
+              disabled
+            >
+              Jetzt buchen
+            </b-button>
+          </div>
         </b-card>
       </b-col>
     </b-row>
-            </b-container>
-    <b-modal
-    v-model="dateErrorModalVisible"
-    title="Achtung"
-    ok-title="OK"
-    ok-variant="primary"
-    centered
-  >
-    Bitte An- und Abreisedatum wählen!
-  </b-modal>
 
+    <!-- Modal -->
+    <b-modal
+      v-model="dateErrorModalVisible"
+      title="Achtung"
+      ok-title="OK"
+      centered
+    >
+      Bitte An- und Abreisedatum wählen!
+    </b-modal>
+  </b-container>
 </template>
 
-
 <script setup>
-import { ref, computed, onMounted } from "vue"
-import axios from "axios"
+import { ref, computed, onMounted } from 'vue'
+import { useRoomsStore } from '@/stores/rooms'
 
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
+const roomsStore = useRoomsStore()
 
-const rooms = ref([])
-const fromDate = ref(today.toISOString().substr(0, 10))
-const toDate = ref(tomorrow.toISOString().substr(0, 10))
-const availability = ref({})
+const today = new Date()
+const tomorrow = new Date(today)
+tomorrow.setDate(today.getDate() + 1)
+
+const fromDate = ref(today.toISOString().slice(0, 10))
+const toDate = ref(tomorrow.toISOString().slice(0, 10))
+
 const currentPage = ref(1)
 const perPage = 5
-
 const dateErrorModalVisible = ref(false)
 
-//5 Zi pro Seite
+const rooms = computed(() => roomsStore.rooms)
+const availability = computed(() => roomsStore.availability)
+
 const paginatedRooms = computed(() => {
   const start = (currentPage.value - 1) * perPage
   return rooms.value.slice(start, start + perPage)
 })
 
-//Icons für Extras
-const roomExtras = (room) => {
-  const icons = {
-    bathroom: "bi bi-droplet",
-    minibar: "bi bi-cup-straw",
-    television: "bi bi-tv",
-    livingroom: "bi bi-house-door",
-    aircondition: "bi bi-snow",
-    wifi: "bi bi-wifi",
-    breakfast: "bi bi-egg-fried",
-    "handicapped accessible": "bi bi-wheelchair"
-  }
-
-  return room.extras
-    .filter((e) => Object.values(e)[0] === 1)
-    .map((e) => {
-      const key = Object.keys(e)[0]
-      return { label: key, icon: icons[key] || "bi bi-question-circle" }
-    })
-}
-
-//Daten vom Server laden
-onMounted(async () => {
-  try {
-    const { data } = await axios.get(`https://boutique-hotel.helmuth-lammer.at/api/v1/rooms`)
-    const uniqueRooms = [
-      ...new Map(data.map(room => [room.id, room])).values()
-    ]
-    uniqueRooms.forEach(room => {
-      
-      const seen = new Set()
-      const filtered = []
-
-      for (const extra of room.extras) {
-        const key = Object.keys(extra)[0] 
-        if (!seen.has(key)) {
-          seen.add(key)
-          filtered.push(extra)
-        }
-      }
-      room.extras = filtered
-    })
-    rooms.value = uniqueRooms
-  } catch (error) {
-    console.error("Fehler beim Laden der Zimmer:", error)
-  }
-})
-
-//Verfügbarkeit prüfen
-const checkAllAvailability = async () => {
+const checkAllAvailability = () => {
   if (!fromDate.value || !toDate.value) {
     dateErrorModalVisible.value = true
     return
   }
-
-for (const room of rooms.value) {
-  const roomId = Number(room.id)
-
-  try {
-    const { data } = await axios.get(
-      `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${room.id}/from/${fromDate.value}/to/${toDate.value}`
-    )
-
-    availability.value[roomId] = data.available === true
-      ? true
-      : data.available === false
-        ? false
-        : undefined
-
-  } catch (error) {
-    console.error(`Fehler beim Laden für Room ${roomId}:`, error)
-  }
+  roomsStore.checkAvailability(fromDate.value, toDate.value)
 }
-}
+
+onMounted(() => {
+  roomsStore.fetchRooms()
+})
 </script>
