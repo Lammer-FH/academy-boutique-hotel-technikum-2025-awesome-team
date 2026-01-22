@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import api from '@/services/api'
 
 export const useBookingStore = defineStore('booking', () => {
@@ -29,7 +29,7 @@ export const useBookingStore = defineStore('booking', () => {
     fromDate.value = from
     toDate.value = to
   }   
-/*
+
   const nights = computed(() => {
     if (!fromDate.value || !toDate.value) return 0
     const from = new Date(fromDate.value)
@@ -47,7 +47,7 @@ export const useBookingStore = defineStore('booking', () => {
     }
     return total
   })
-    */
+    
 
   function setRoom(room) {
     roomId.value = room.id
@@ -140,8 +140,8 @@ export const useBookingStore = defineStore('booking', () => {
     loading,
     error,
     // computed
-    //nights,
-    //totalPrice,
+    nights,
+    totalPrice,
     // actions
     setDates,
     setRoom,
