@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import api from '@/services/api'
 
 export const useBookingStore = defineStore('booking', () => {
@@ -14,6 +14,10 @@ export const useBookingStore = defineStore('booking', () => {
   const fromDate = ref('')
   const toDate = ref('')
   const roomId = ref(null)
+  const roomNumber = ref('')
+  const roomName = ref('')
+  const beds = ref(0)
+  const pricePerNight = ref(0)
 
   // Result / state
   const booking = ref(null)
@@ -24,6 +28,33 @@ export const useBookingStore = defineStore('booking', () => {
   function setDates(from, to) {
     fromDate.value = from
     toDate.value = to
+  }   
+
+  const nights = computed(() => {
+    if (!fromDate.value || !toDate.value) return 0
+    const from = new Date(fromDate.value)
+    const to = new Date(toDate.value)
+    return Math.max(
+      Math.ceil((to - from) / (1000 * 60 * 60 * 24)),
+      0
+    )
+  })
+
+  const totalPrice = computed(() => {
+    let total = nights.value * pricePerNight.value
+    if (fruehstueck.value) {
+      total += nights.value
+    }
+    return total
+  })
+    
+
+  function setRoom(room) {
+    roomId.value = room.id
+    roomNumber.value = room.roomNumber
+    roomName.value = room.roomName
+    beds.value = room.beds
+    pricePerNight.value = room.pricePerNight
   }
 
   async function checkAvailability() {
@@ -83,8 +114,11 @@ export const useBookingStore = defineStore('booking', () => {
     dob.value = ''
     fruehstueck.value = false
     fromDate.value = ''
-    toDate.value = ''
+    toDate.value = ''    
     roomId.value = null
+    roomNumber.value = ''
+    roomName.value = ''
+    beds.value = 0
   }
 
   return {
@@ -97,12 +131,20 @@ export const useBookingStore = defineStore('booking', () => {
     fromDate,
     toDate,
     roomId,
+    roomNumber,
+    roomName,
+    beds,
+    pricePerNight,
     booking,
     bookingId,
     loading,
     error,
+    // computed
+    nights,
+    totalPrice,
     // actions
     setDates,
+    setRoom,
     checkAvailability,
     submitBooking,
     fetchBooking,

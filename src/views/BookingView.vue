@@ -61,7 +61,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BookingForm from '@/components/BookingForm.vue'
 import BookingModal from '@/components/BookingModal.vue'
@@ -81,15 +81,23 @@ const room = computed(() =>
   roomsStore.rooms.find(r => r.id === roomId)
 )
 
-onMounted(() => {
+onMounted(async () => {
   if (!roomsStore.rooms.length) {
-    roomsStore.fetchRooms()
+    await roomsStore.fetchRooms()
   }
-   const { from, to } = route.query
 
+  const { from, to } = route.query
   if (from && to) {
     bookingStore.setDates(from, to)
   }
-   bookingStore.roomId = roomId
+
+  if (room.value) {
+    bookingStore.setRoom(room.value)
+  }
 })
+
+watch(room, r => {
+  if (r) bookingStore.setRoom(r)
+})
+
 </script>
