@@ -10,7 +10,6 @@ export const useAuthStore = defineStore('auth', () => {
   async function login(credentials) {
     error.value = null
 
-    // Simulated backend login (replace with real API later)
     const savedUser = JSON.parse(localStorage.getItem('registeredUser'))
 
     if (
@@ -20,6 +19,10 @@ export const useAuthStore = defineStore('auth', () => {
     ) {
       user.value = savedUser
       localStorage.setItem('user', JSON.stringify(savedUser))
+
+      // 🔄 Refresh after login
+      window.location.reload()
+
       return true
     }
 
@@ -30,7 +33,6 @@ export const useAuthStore = defineStore('auth', () => {
   async function register(data) {
     error.value = null
 
-    // Simulated backend register
     const newUser = {
       firstname: data.firstname,
       lastname: data.lastname,
@@ -38,12 +40,14 @@ export const useAuthStore = defineStore('auth', () => {
       password: data.password
     }
 
-    // save user (mock backend)
     localStorage.setItem('registeredUser', JSON.stringify(newUser))
 
-    //AUTO LOGIN AFTER REGISTER
+    // Auto login
     user.value = newUser
     localStorage.setItem('user', JSON.stringify(newUser))
+
+    // 🔄 Refresh after register
+    window.location.reload()
 
     return true
   }
@@ -51,6 +55,9 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     user.value = null
     localStorage.removeItem('user')
+    sessionStorage.clear();
+    // 🔄 Refresh after logout
+    window.location.reload()
   }
 
   return {
