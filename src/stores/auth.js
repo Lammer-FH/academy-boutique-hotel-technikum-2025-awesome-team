@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = savedUser
       localStorage.setItem('user', JSON.stringify(savedUser))
 
-      // Refresh after login
+      // 🔄 Refresh after login
       window.location.reload()
 
       return true
@@ -46,7 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = newUser
     localStorage.setItem('user', JSON.stringify(newUser))
 
-    // Refresh after register
+    // 🔄 Refresh after register
     window.location.reload()
 
     return true
@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
     localStorage.removeItem('user')
     sessionStorage.clear();
-    // Refresh after logout
+    // 🔄 Refresh after logout
     window.location.reload()
   }
 

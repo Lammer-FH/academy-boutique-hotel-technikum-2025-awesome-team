@@ -1,55 +1,153 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import api from '@/services/api'
 
 export const useBookingStore = defineStore('booking', () => {
-    // **Guest Info**
-    const firstName = ref('')
-    const lastName = ref('')
-    const email = ref('')
-    const dob = ref('')
-    const fruehstueck = ref(false)
+  // Guest input
+  const firstName = ref('')
+  const lastName = ref('')
+  const email = ref('')
+  const dob = ref('')
+  const fruehstueck = ref(false)
 
-    // **Booking Info**
-    const fromDate = ref('')
-    const toDate = ref('')
-    const roomId = ref('')
-    const roomNumber = ref('')
-    const roomName = ref('')
-    const roomBeds = ref(0)
-    const roomPricePerNight = ref(0)
-    const roomExtras = ref([])
+  // Booking data
+  const fromDate = ref('')
+  const toDate = ref('')
+  const roomId = ref(null)
+  const roomNumber = ref('')
+  const roomName = ref('')
+  const beds = ref(0)
+  const pricePerNight = ref(0)
 
-    // Reset function
-    function resetBooking() {
-        firstName.value = ''
-        lastName.value = ''
-        email.value = ''
-        dob.value = ''
-        fruehstueck.value = false
-        fromDate.value = ''
-        toDate.value = ''
-        roomId.value = ''
-        roomNumber.value = ''
-        roomName.value = ''
-        roomBeds.value = 0
-        roomPricePerNight.value = 0
-        roomExtras.value = []
+  // Result / state
+  const booking = ref(null)
+  const bookingId = ref(null)
+  const loading = ref(false)
+  const error = ref(null)
+
+  function setDates(from, to) {
+    fromDate.value = from
+    toDate.value = to
+  }   
+
+  const nights = computed(() => {
+    if (!fromDate.value || !toDate.value) return 0
+    const from = new Date(fromDate.value)
+    const to = new Date(toDate.value)
+    return Math.max(
+      Math.ceil((to - from) / (1000 * 60 * 60 * 24)),
+      0
+    )
+  })
+
+  const totalPrice = computed(() => {
+    let total = nights.value * pricePerNight.value
+    if (fruehstueck.value) {
+      total += nights.value
     }
+    return total
+  })
+    
 
-    return {
-        firstName,
-        lastName,
-        email,
-        dob,
-        fruehstueck,
-        fromDate,
-        toDate,
-        roomId,
-        roomNumber,
-        roomName,
-        roomBeds,
-        roomPricePerNight,
-        roomExtras,
-        resetBooking
+  function setRoom(room) {
+    roomId.value = room.id
+    roomNumber.value = room.roomNumber
+    roomName.value = room.roomName
+    beds.value = room.beds
+    pricePerNight.value = room.pricePerNight
+  }
+
+  async function checkAvailability() {
+    if (!roomId.value || !fromDate.value || !toDate.value) return false
+
+    const { data } = await api.get(
+      `/room/${roomId.value}/from/${fromDate.value}/to/${toDate.value}`
+    )
+
+    return data.available === true
+  }
+
+  async function submitBooking() {
+    loading.value = true
+    error.value = null
+
+    try {
+      const { data } = await api.post(
+        `/room/${roomId.value}/from/${fromDate.value}/to/${toDate.value}`,
+        {
+          firstname: firstName.value,
+          lastname: lastName.value,
+          email: email.value,
+          birthdate: dob.value
+        }
+      )
+
+      bookingId.value = data.id
+      return data.id
+    } catch (err) {
+      error.value = 'Fehler beim Absenden der Buchung'
+      throw err
+    } finally {
+      loading.value = false
     }
+  }
+
+  async function fetchBooking(id) {
+    loading.value = true
+    error.value = null
+    try {
+      const { data } = await api.get(`/bookings/${id}`)
+      booking.value = data
+    } catch (err) {
+      error.value = err.message || 'Buchung konnte nicht geladen werden'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  function resetBooking() {
+    booking.value = null
+    bookingId.value = null
+    firstName.value = ''
+    lastName.value = ''
+    email.value = ''
+    dob.value = ''
+    fruehstueck.value = false
+    fromDate.value = ''
+    toDate.value = ''    
+    roomId.value = null
+    roomNumber.value = ''
+    roomName.value = ''
+    beds.value = 0
+  }
+
+  return {
+    // states
+    firstName,
+    lastName,
+    email,
+    dob,
+    fruehstueck,
+    fromDate,
+    toDate,
+    roomId,
+    roomNumber,
+    roomName,
+    beds,
+    pricePerNight,
+    booking,
+    bookingId,
+    loading,
+    error,
+    // computed
+    nights,
+    totalPrice,
+    // actions
+    setDates,
+    setRoom,
+    checkAvailability,
+    submitBooking,
+    fetchBooking,
+    resetBooking
+  }
 })

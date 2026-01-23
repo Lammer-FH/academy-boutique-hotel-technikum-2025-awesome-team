@@ -150,7 +150,7 @@ async function isRoomAvailable() {
   }
 }
 
-
+// Button-based validation for dates
 async function validateDates() {
   if (!store.fromDate || !store.toDate) {
     showAlert("Bitte beide Daten auswählen.")
