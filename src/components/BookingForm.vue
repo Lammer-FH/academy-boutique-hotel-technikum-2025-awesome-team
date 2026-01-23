@@ -23,7 +23,6 @@
           class="w-100 w-sm-auto"
         />
 
-        <!-- Validate button -->
         <b-button 
           variant="primary" 
           @click="validateDates"
@@ -35,7 +34,6 @@
     </b-form-group>
 
     <b-row>
-      <!-- First Name -->
       <b-col cols="12" sm="6">
         <b-form-group
           label="Vorname"
@@ -51,7 +49,6 @@
         </b-form-group>
       </b-col>
 
-      <!-- Last Name -->
       <b-col cols="12" sm="6">
         <b-form-group
           label="Nachname"
@@ -60,7 +57,7 @@
         >
           <b-form-input
             placeholder="Nachname"
-             v-model="store.lastName"
+            v-model="store.lastName"
             :state="lastNameError ? false : null"
             required
           />
@@ -69,7 +66,6 @@
     </b-row>
 
     <b-row>
-      <!-- Email -->
       <b-col cols="12" sm="6">
         <b-form-group
           label="E-Mail"
@@ -79,42 +75,54 @@
           <b-form-input
             placeholder="E-Mail"
             type="email"
-             v-model="store.email"
+            v-model="store.email"
             :state="emailError ? false : null"
             required
           />
         </b-form-group>
       </b-col>
 
-      <!-- Date of Birth -->
       <b-col cols="12" sm="6">
         <b-form-group label="Geburtsdatum">
           <b-form-input
             type="date"
-             v-model="store.dob"
+            v-model="store.dob"
             required
           />
         </b-form-group>
       </b-col>
     </b-row>
 
-    <!-- Breakfast Option -->
     <b-form-group label="Frühstück">
       <div class="d-flex gap-3">
-<b-form-radio v-model="store.fruehstueck" :value="true">Ja</b-form-radio>
-<b-form-radio v-model="store.fruehstueck" :value="false">Nein</b-form-radio>
+        <b-form-radio v-model="store.fruehstueck" :value="true">Ja</b-form-radio>
+        <b-form-radio v-model="store.fruehstueck" :value="false">Nein</b-form-radio>
       </div>
     </b-form-group>
   </b-form>
 </template>
 
 <script setup>
-import {ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-
 import { useBookingStore } from '../stores/booking'
+import { useAuthStore } from '@/stores/auth'
+
 const store = useBookingStore()
+const auth = useAuthStore()
 const router = useRouter()
+
+/**
+ * AUTO-FILL USER DATA AFTER LOGIN / REGISTRATION
+ */
+onMounted(() => {
+  if (auth.isAuthenticated && auth.user) {
+    store.firstName = auth.user.firstname
+    store.lastName = auth.user.lastname
+    store.email = auth.user.email
+  }
+})
+
 
 // Modal state
 const showModal = ref(false)
@@ -142,7 +150,7 @@ async function isRoomAvailable() {
   }
 }
 
-// Button-based validation for dates
+
 async function validateDates() {
   if (!store.fromDate || !store.toDate) {
     showAlert("Bitte beide Daten auswählen.")
@@ -174,7 +182,7 @@ function updateUrl() {
   })
 }
 
-// Validate form inputs
+// Validation
 const emailError = ref("")
 const firstNameError = ref("")
 const lastNameError = ref("")
@@ -184,7 +192,6 @@ function validateEmail(value) {
   return re.test(value)
 }
 
-// Watchers for real-time validation
 watch(() => store.email, val => {
   if (!val) emailError.value = "E-Mail ist erforderlich."
   else if (!validateEmail(val)) emailError.value = "Bitte eine gültige E-Mail-Adresse eingeben."
@@ -201,16 +208,15 @@ watch(() => store.lastName, val => {
 </script>
 
 <style>
-/* Styling for form inputs and radios */
 .form-check-input:checked{
-    background-color: var(--color-primary);
-    border-color: var(--color-secondary);
+  background-color: var(--color-primary);
+  border-color: var(--color-secondary);
 }
 .form-check-input:focus-within{
-    box-shadow: none
+  box-shadow: none
 }
 .form-control:focus{
-    box-shadow: none;
-    border-color: var(--color-secondary);
+  box-shadow: none;
+  border-color: var(--color-secondary);
 }
 </style>

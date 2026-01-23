@@ -1,66 +1,68 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import api from '@/services/api'
 
 export const useAuthStore = defineStore('auth', () => {
-
-  const token = ref(localStorage.getItem('token'))
   const user = ref(JSON.parse(localStorage.getItem('user')))
   const error = ref(null)
-  const loading = ref(false)
 
-  const isAuthenticated = computed(() => !!token.value)
-
-  function saveSession(tokenValue, userValue) {
-    token.value = tokenValue
-    user.value = userValue
-    localStorage.setItem('token', tokenValue)
-    localStorage.setItem('user', JSON.stringify(userValue))
-  }
+  const isAuthenticated = computed(() => !!user.value)
 
   async function login(credentials) {
-    loading.value = true
     error.value = null
 
-    try {
-      const res = await api.post('https://boutique-hotel.helmuth-lammer.at/api/v1/login', credentials)
-      saveSession(res.data.token, res.data.user)
+    const savedUser = JSON.parse(localStorage.getItem('registeredUser'))
+
+    if (
+      savedUser &&
+      savedUser.email === credentials.email &&
+      savedUser.password === credentials.password
+    ) {
+      user.value = savedUser
+      localStorage.setItem('user', JSON.stringify(savedUser))
+
+      // Refresh after login
+      window.location.reload()
+
       return true
-    } catch (err) {
-      error.value = err.response?.data?.message || 'Login fehlgeschlagen'
-      return false
-    } finally {
-      loading.value = false
     }
+
+    error.value = 'Invalid login'
+    return false
   }
 
   async function register(data) {
-    loading.value = true
     error.value = null
 
-    try {
-      await api.post('https://boutique-hotel.helmuth-lammer.at/api/v1/register', data)
-      return true
-    } catch (err) {
-      error.value = err.response?.data?.message || 'Registrierung fehlgeschlagen'
-      return false
-    } finally {
-      loading.value = false
+    const newUser = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      password: data.password
     }
+
+    localStorage.setItem('registeredUser', JSON.stringify(newUser))
+
+    // Auto login
+    user.value = newUser
+    localStorage.setItem('user', JSON.stringify(newUser))
+
+    // Refresh after register
+    window.location.reload()
+
+    return true
   }
 
   function logout() {
-    token.value = null
     user.value = null
-    localStorage.removeItem('token')
     localStorage.removeItem('user')
+    sessionStorage.clear();
+    // Refresh after logout
+    window.location.reload()
   }
 
   return {
-    token,
     user,
     error,
-    loading,
     isAuthenticated,
     login,
     register,
