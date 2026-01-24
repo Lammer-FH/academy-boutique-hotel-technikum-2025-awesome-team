@@ -99,5 +99,4 @@ onMounted(async () => {
 watch(room, r => {
   if (r) bookingStore.setRoom(r)
 })
-
 </script>

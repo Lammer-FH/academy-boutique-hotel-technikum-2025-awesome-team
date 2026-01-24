@@ -1,8 +1,3 @@
-<script setup>
-import ImageCarousel from '../components/ImageCarousel.vue';
-</script>
-
-
 <template>
   <b-container fluid class="py-5 mt-4">
     <b-row class="justify-content-center">
@@ -32,8 +27,12 @@ Ob Sie auf der Durchreise sind oder einen längeren Aufenthalt planen – bei un
 </template>
 
 
-<style>
+<script setup>
+import ImageCarousel from '../components/ImageCarousel.vue';
+</script>
 
+
+<style>
 p {
   font-size: clamp(1rem, 1.2vw, 1.2rem); 
   line-height: 1.6;

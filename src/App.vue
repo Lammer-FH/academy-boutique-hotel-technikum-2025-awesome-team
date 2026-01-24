@@ -1,9 +1,3 @@
-<script setup>
-import {RouterView } from 'vue-router'
-import Header from './components/Header.vue'
-import Footer from './components/Footer.vue'
-</script>
-
 <template>
   <Header />
 
@@ -16,6 +10,14 @@ import Footer from './components/Footer.vue'
 </div>
 
 </template>
+
+
+<script setup>
+import {RouterView } from 'vue-router'
+import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'
+</script>
+
 
 <style>
 .mt-120 {
@@ -171,6 +173,5 @@ import Footer from './components/Footer.vue'
 .room-button {  
   margin-top: auto;
 }
-
 </style>
 

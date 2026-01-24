@@ -168,15 +168,12 @@ const route = useRoute();
 const store = useBookingStore();
 
 const booking = computed(() => store.booking)
-const loading = computed(() => store.loading)
-const error = computed(() => store.error)
 
 watch(
   () => route.params.id,
   (id) => store.fetchBooking(id),
   { immediate: true }
 )
-
 </script>
 
 
@@ -232,7 +229,6 @@ watch(
   font-size: 0.9rem;
   backdrop-filter: blur(12px);
 
-  /* Fix width for mobile */
   max-width: 70%;
   white-space: nowrap;
   overflow: hidden;
@@ -249,7 +245,6 @@ watch(
   }
 }
 
-
 .return-btn {
   border-radius: 30px;
   font-size: 1.2rem;
@@ -264,7 +259,7 @@ watch(
 .map-container {
   border-radius: 12px;
   overflow: hidden;
-  min-height: 300px; /* default for mobile */
+  min-height: 300px;
 }
 
 /* Iframe fills container */
@@ -306,8 +301,8 @@ watch(
 
   .map-container {
     width: 100%;
-    height: 50vh; /* adjust if you want bigger map */
-    margin-top: 1rem; /* gap between buttons and map */
+    height: 50vh;
+    margin-top: 1rem;
   }
 }
 

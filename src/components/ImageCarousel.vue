@@ -28,8 +28,6 @@
     <path d="M7 5L13 10L7 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </b-button>
-
-
   </div>
 </template>
 
@@ -131,5 +129,4 @@ export default {
     height: 16px;
   }
 }
-
 </style>

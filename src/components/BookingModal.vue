@@ -1,40 +1,3 @@
-<script setup>
-import { computed, ref, useTemplateRef } from 'vue'
-import { useRouter } from 'vue-router'
-import * as bootstrap from 'bootstrap'
-import { useBookingStore } from '@/stores/booking'
-
-const store = useBookingStore()
-const router = useRouter()
-
-const bookingModal = useTemplateRef('booking-modal')
-const showAlert = ref(false)
-const alertMessage = ref('')
-
-const canBook = computed(() =>
-  store.firstName && store.lastName && store.email && store.dob
-)
-
-function openModal() {
-  bootstrap.Modal.getOrCreateInstance(bookingModal.value).show()
-}
-
-function closeModal() {
-  bootstrap.Modal.getOrCreateInstance(bookingModal.value).hide()
-}
-
-async function submitBooking() {
-  try {
-    const id = await store.submitBooking()
-    closeModal()
-    router.push({ name: 'booked', params: { id }, query: { new: true } })
-  } catch {
-    alertMessage.value = 'Fehler bei der Buchung.'
-    showAlert.value = true
-  }
-}
-</script>
-
 <template>
   <b-col class="text-end mt-3">
     <b-button variant="primary" :disabled="!canBook" @click="openModal">
@@ -81,3 +44,40 @@ async function submitBooking() {
     <b-button variant="primary" @click="showAlert = false">OK</b-button>
   </b-modal>
 </template>
+
+<script setup>
+import { computed, ref, useTemplateRef } from 'vue'
+import { useRouter } from 'vue-router'
+import * as bootstrap from 'bootstrap'
+import { useBookingStore } from '@/stores/booking'
+
+const store = useBookingStore()
+const router = useRouter()
+
+const bookingModal = useTemplateRef('booking-modal')
+const showAlert = ref(false)
+const alertMessage = ref('')
+
+const canBook = computed(() =>
+  store.firstName && store.lastName && store.email && store.dob
+)
+
+function openModal() {
+  bootstrap.Modal.getOrCreateInstance(bookingModal.value).show()
+}
+
+function closeModal() {
+  bootstrap.Modal.getOrCreateInstance(bookingModal.value).hide()
+}
+
+async function submitBooking() {
+  try {
+    const id = await store.submitBooking()
+    closeModal()
+    router.push({ name: 'booked', params: { id }, query: { new: true } })
+  } catch {
+    alertMessage.value = 'Fehler bei der Buchung.'
+    showAlert.value = true
+  }
+}
+</script>

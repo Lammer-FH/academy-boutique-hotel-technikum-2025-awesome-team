@@ -1,6 +1,3 @@
-<script setup>
-</script>
-
 <template>
   <div class="title-container position-relative text-center">
     <img class="title-img img-fluid" src="/images/about/lobby2.jpg" alt="Hotel Lobby" />
@@ -78,5 +75,4 @@
 .btn-secondary{
     background-color: var(--color-secondary);
 }
-
 </style>
