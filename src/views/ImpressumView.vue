@@ -3,7 +3,7 @@
     <b-row class="justify-content-center">
       <b-col cols="12" md="10" lg="8">
         <div class="fade-in">
-          <h1 class="display-4 font-weight-bold text-gradient">Impressum</h1>
+          <h1 class="display-5 font-weight-bold text-gradient">Impressum</h1>
           <p>
             Angaben gemäß § 5 ECG (E-Commerce-Gesetz) und § 14 UGB (Unternehmensgesetzbuch):
           </p>

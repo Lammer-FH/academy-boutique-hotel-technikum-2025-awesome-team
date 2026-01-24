@@ -38,7 +38,6 @@ h1 {
 
 p {
     font-size: clamp(1rem, 1.2vw, 1.2rem);
-    line-height: 1.6;
 }
 
 .text-gradient {

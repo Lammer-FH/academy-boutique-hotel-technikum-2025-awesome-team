@@ -139,6 +139,12 @@ export const useBookingStore = defineStore('booking', () => {
             .filter(extra => extra.icon)
     })
 
+    function formatDate(dateStr) {
+        if (!dateStr) return ''
+        const [year, month, day] = dateStr.split('-')
+        return `${day}.${month}.${year}`
+    }
+
     function resetBooking() {
         booking.value = null
         bookingId.value = null
@@ -183,6 +189,7 @@ export const useBookingStore = defineStore('booking', () => {
         checkAvailability,
         submitBooking,
         fetchBooking,
-        resetBooking
+        resetBooking,
+        formatDate,
     }
 })

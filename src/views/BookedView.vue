@@ -41,11 +41,11 @@
 					<div class="mb-4">
 						<div>
 							<i class="bi bi-arrow-right-circle"></i>
-							<b> Anreise:</b> {{ booking.from }}
+							<b> Anreise:</b> {{store.formatDate( booking.from)}}
 						</div>
 						<div>
 							<i class="bi bi-arrow-left-circle"></i>
-							<b> Abreise:</b> {{ booking.to }}
+							<b> Abreise:</b> {{ store.formatDate(booking.to) }}
 						</div>
 						<div>
 							<i class="bi bi-egg-fried"></i>
@@ -74,7 +74,7 @@
 								<i class="bi bi-person-fill"></i> <b>{{ guest.firstname }} {{ guest.lastname }}</b>
 							</div>
 							<div><i class="bi bi-envelope"></i> {{ guest.email }}</div>
-							<div><i class="bi bi-calendar"></i> Geboren am {{ guest.birthdate }}</div>
+							<div><i class="bi bi-calendar"></i> Geboren am {{ store.formatDate(guest.birthdate) }}</div>
 						</div>
 					</div>
 				</b-col>
@@ -109,12 +109,11 @@
       </p>
 
       <!-- Maps Buttons -->
-        <div class="mb-lg-0 mb-3">
+        <div class="gap-2 d-flex flex-wrap">
   <b-button
     variant="primary"
     href="https://www.google.com/maps/place/Weihburggasse+9"
     target="_blank"
-    class="mx-2 mt-2 mb-lg-0"
   >
     In Google Maps öffnen
   </b-button>
@@ -123,7 +122,6 @@
     variant="primary"
     href="https://maps.apple.com/place?address=Weihburggasse+9"
     target="_blank"
-    class="mx-2 mt-2 mb-lg-0"
   >
     In Apple Maps öffnen
   </b-button>

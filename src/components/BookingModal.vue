@@ -14,21 +14,16 @@
         </div>
 
         <div class="modal-body">
+            <!-- Guest details-->
           <p><b>Name:</b> {{ store.firstName }} {{ store.lastName }}</p>
           <p><b>E-Mail:</b> {{ store.email }}</p>
-          <p></p>
-          <p><b>Zeitraum:</b> {{ store.fromDate }} – {{ store.toDate }}</p>
-          <p></p>
-          <p>
-          <b>Zimmer:</b>
-          Zimmer {{ store.roomNumber }} – {{ store.roomName }}
-          </p>
-          <p>
-          <b>Bett(en):</b> {{ store.beds }}
-          </p>
-          <p class="fs-5">
-          <b>Gesamtpreis:</b> {{ store.totalPrice }} €
-          </p>
+          <p><b>Geburtsdatum:</b> {{ store.formatDate(store.dob) }}</p><br>
+<!-- Room details-->
+          <p><b>Zimmer:</b> {{ store.roomNumber }} – {{ store.roomName }}</p>
+                    <p><b>Bett(en):</b> {{ store.beds }}</p>
+          <p><b>Zeitraum:</b> {{ store.formatDate(store.fromDate) }} – {{ store.formatDate(store.toDate) }}</p>
+           <p><b>Frühstück:</b> {{ store.fruehstueck ? 'Ja' : 'Nein' }}</p><br>
+          <p class="fs-5"><b>Gesamtpreis:</b> {{ store.totalPrice }} €</p>
         </div>
 
         <div class="modal-footer">

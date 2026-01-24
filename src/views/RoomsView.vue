@@ -1,7 +1,7 @@
 <template>
   <b-container class="rooms-view mt-2 mb-5">
     <div class="text-center fade-in">
-    <h1 class="display-4 font-weight-bold text-gradient">Unsere Zimmer</h1>
+    <h1 class="display-5 font-weight-bold text-gradient">Unsere Zimmer</h1>
     <p>Wählen Sie hier Ihre Ruhestätte...</p>
 </div>
     <!-- Date Picker -->
@@ -18,7 +18,7 @@
     </b-row>
 
     <!-- Actions -->
-    <div class="primary-bar d-flex flex-column align-items-center gap-3 py-3 mb-4">
+    <div class="primary-bar d-flex flex-column align-items-center pt-3 gap-2 mb-3">
       <b-button variant="primary" @click="checkAllAvailability">
         Verfügbarkeit prüfen
       </b-button>
@@ -183,7 +183,6 @@ onMounted(() => {
 .primary-bar {
   background-color: var(--color-primary1);
   border-radius: 12px;
-  padding: 12px 20px !important;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 </style>
