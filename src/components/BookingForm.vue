@@ -137,19 +137,6 @@ function closeModal() {
   showModal.value = false
 }
 
-// API call
-async function isRoomAvailable() {
-  try {
-    const url = `https://boutique-hotel.helmuth-lammer.at/api/v1/room/${store.roomId}/from/${store.fromDate}/to/${store.toDate}`
-    const res = await fetch(url)
-    const data = await res.json()
-    return data.available
-  } catch (err) {
-    console.error("Fehler beim Prüfen der Verfügbarkeit", err)
-    return false
-  }
-}
-
 // Button-based validation for dates
 async function validateDates() {
   if (!store.fromDate || !store.toDate) {
@@ -162,7 +149,7 @@ async function validateDates() {
     return
   }
 
-  const available = await isRoomAvailable()
+  const available = await store.checkAvailability()
   if (!available) {
     showAlert("Zimmer ist in diesem Zeitraum NICHT verfügbar.")
     return
