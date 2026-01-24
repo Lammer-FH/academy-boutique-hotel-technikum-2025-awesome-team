@@ -32,9 +32,9 @@
 				<!-- Content -->
 				<b-col cols="12" lg="7" class="p-4 p-lg-5 content-col">
 					<!-- Room Title -->
-					<h2 class="mb-2">{{ booking.room.name }}</h2>
+					<h2 class="mb-2">{{ booking.room.roomName }}</h2>
 					<p class="text-muted mb-4">
-						Zimmer Nr. <b>{{ booking.room.number }}</b> • <b>{{ booking.room.beds }}</b> Bett(er) •
+						Zimmer Nr. <b>{{ booking.room.roomNumber }}</b> • <b>{{ booking.room.beds }}</b> Bett(en) •
 						<b>{{ booking.room.pricePerNight }} €</b>/Nacht
 					</p>
 
@@ -58,12 +58,12 @@
 					<h5 class="mt-4 mb-2">Ausstattung</h5>
 					<div class="d-flex flex-wrap gap-2 mt-2">
 						<small
-							v-for="extra in booking.room.extras.filter(e => e.available)"
+							v-for="extra in store.roomAmenities"
 							:key="extra.name"
 							class="d-flex align-items-center gap-1 text-secondary"
 						>
 							<i :class="extra.icon"></i>
-							{{ extra.name }}
+							{{ extra.label }}
 						</small>
 					</div>
 
@@ -231,7 +231,24 @@ watch(
   border-radius: 6px;
   font-size: 0.9rem;
   backdrop-filter: blur(12px);
+
+  /* Fix width for mobile */
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+@media (max-width: 767px) {
+  .floating-badge {
+    top: 8px;
+    right: 8px;
+    left: auto;
+    font-size: 0.8rem;
+    max-width: 90%;
+  }
+}
+
 
 .return-btn {
   border-radius: 30px;

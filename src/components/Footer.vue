@@ -123,4 +123,17 @@ export default {
 .google:hover i { color: #ff6b57; }
 .whatsapp:hover i { color: #4fff8c; }
 
+/* adjust footer when mobile */
+@media (max-width: 767px) {
+  .follow-label {
+    display: none;
+  }
+
+  .footer-row {
+    gap: 0.5rem;
+  }
+  .modern-footer .big {
+    font-size: 10px;
+  }
+}
 </style>
