@@ -2,7 +2,7 @@
 	<b-container v-if="booking" class="booking-result mt-2 mb-5">
 		<!-- Header Section -->
 		<div class="text-center mb-5 fade-in">
-			<h1 class="display-4 font-weight-bold text-gradient">
+			<h1 class="display-5 font-weight-bold text-gradient">
 				{{ route.query.new ? "Ihre Buchung war erfolgreich!" : "Ihre Buchung" }}
 			</h1>
 			<p class="lead text-muted">Vielen Dank! Wir freuen uns, Sie bald begrüßen zu dürfen.</p>
