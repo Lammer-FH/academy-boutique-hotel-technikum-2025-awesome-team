@@ -36,15 +36,20 @@ h1 {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
+p {
+    font-size: clamp(1rem, 1.2vw, 1.2rem);
+    line-height: 1.6;
+}
+
+.text-gradient {
+    background: linear-gradient(90deg, var(--color-secondary), var(--color-primary1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
 /* ========================
    Global Utilities
 ======================== */
-.mt-120 {
-    margin-top: 120px;
-    margin-bottom: 120px;
-}
-
 .check-btn {
     background-color: var(--color-primary);
     border: none;

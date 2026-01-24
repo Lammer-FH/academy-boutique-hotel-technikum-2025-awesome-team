@@ -1,5 +1,5 @@
 <template>
-  <div class="title-container position-relative text-center">
+  <div class="title-container text-center">
     <img class="title-img img-fluid" src="/images/about/lobby2.jpg" alt="Hotel Lobby" />
 
     <div class="title-text text-white d-flex flex-column align-items-center justify-content-center">
@@ -29,6 +29,13 @@
 .title-container {
   width: 100%;
   overflow: hidden;
+  position: absolute;
+  inset: 0;
+}
+
+.main-default {
+    margin: 0;
+    padding: 0;
 }
 
 .title-img {

@@ -1,8 +1,9 @@
 <template>
-  <b-container class="rooms-view mt-120 mb-5">
-    <h2 class="text-center mb-4">Unsere Zimmer</h2>
+  <b-container class="rooms-view mt-2 mb-5">
+    <div class="text-center fade-in">
+    <h1 class="display-4 font-weight-bold text-gradient">Unsere Zimmer</h1>
     <p>Wählen Sie hier Ihre Ruhestätte...</p>
-
+</div>
     <!-- Date Picker -->
     <b-row class="mb-4 justify-content-center">
       <b-col cols="12" md="3">
@@ -164,3 +165,25 @@ onMounted(() => {
   roomsStore.fetchRooms()
 })
 </script>
+
+<style scoped>
+.room-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.room-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.primary-bar {
+  background-color: var(--color-primary1);
+  border-radius: 12px;
+  padding: 12px 20px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+</style>

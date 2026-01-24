@@ -104,7 +104,7 @@ export default {
 <style scoped>
 header {
   width: 100%;
-  position: fixed;
+  position: sticky;
   top: 0;
   z-index: 1000;
 }

@@ -1,12 +1,14 @@
 <template>
-  <b-container class="mt-5 pt-5">
+  <b-container class="mt-2 mb-5">
     <b-row class="justify-content-center">
       <b-col cols="12" md="10" lg="8">
-        <div class="about">
-          <h1 class="mb-4">Impressum</h1>
-          <p class="mb-2">
+        <div class="fade-in">
+          <h1 class="display-4 font-weight-bold text-gradient">Impressum</h1>
+          <p>
             Angaben gemäß § 5 ECG (E-Commerce-Gesetz) und § 14 UGB (Unternehmensgesetzbuch):
           </p>
+          </div>
+          <div>
           <p class="mb-1"><strong>Hotelname:</strong> Hotel Vue</p>
           <p class="mb-1"><strong>Inhaber:</strong> Vlad von Nacht</p>
           <p class="mb-1"><strong>Adresse:</strong> Weihburggasse 9, 1010 Wien, Österreich</p>
@@ -18,14 +20,3 @@
     </b-row>
   </b-container>
 </template>
-
-<style scoped>
-.about h1 {
-  font-weight: bold;
-}
-
-.about p {
-  font-size: clamp(1rem, 1.2vw, 1.1rem);
-  line-height: 1.6;
-}
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <b-col class="text-end mt-3">
+  <b-col class="text-end">
     <b-button variant="primary" :disabled="!canBook" @click="openModal">
       Zimmer buchen
     </b-button>
@@ -8,8 +8,8 @@
   <div ref="booking-modal" class="modal fade">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5>Buchung bestätigen</h5>
+        <div class="modal-header bg-light">
+          <h1 class="display-6 text-gradient">Buchung bestätigen</h1>
           <button class="btn-close" @click="closeModal" />
         </div>
 

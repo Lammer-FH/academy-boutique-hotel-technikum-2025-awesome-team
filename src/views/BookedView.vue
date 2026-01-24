@@ -1,11 +1,10 @@
 <template>
-	<b-container v-if="booking" class="my-5 py-5 booking-result">
+	<b-container v-if="booking" class="booking-result mt-2 mb-5">
 		<!-- Header Section -->
 		<div class="text-center mb-5 fade-in">
-			<h1 class="display-4 font-weight-bold mb-3 text-gradient">
+			<h1 class="display-4 font-weight-bold text-gradient">
 				{{ route.query.new ? "Ihre Buchung war erfolgreich!" : "Ihre Buchung" }}
 			</h1>
-
 			<p class="lead text-muted">Vielen Dank! Wir freuen uns, Sie bald begrüßen zu dürfen.</p>
 		</div>
 
@@ -178,13 +177,6 @@ watch(
 
 
 <style scoped>
-/* --- Booking information card styles --- */
-.text-gradient {
-  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary1));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .fade-in {
   animation: fadeIn 0.8s ease;
 }
