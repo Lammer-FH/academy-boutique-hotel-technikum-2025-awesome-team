@@ -1,7 +1,7 @@
 <template>
     <b-container v-if="booking" class="booking-result mt-2 mb-5">
         <!-- Header Section -->
-        <div class="text-center mb-5 fade-in">
+        <div class="text-center mb-5 fade-in print-hide">
             <h1 class="display-5 font-weight-bold text-gradient">
                 {{ route.query.new ? "Ihre Buchung war erfolgreich!" : "Ihre Buchung" }}
             </h1>
@@ -70,6 +70,9 @@
                             <div><i class="bi bi-calendar"></i> Geboren am {{ store.formatDate(guest.birthdate) }}</div>
                         </div>
                     </div>
+                    <b-button variant="secondary" class="mt-3" @click="print">
+                        Bestätigung drucken
+                    </b-button>
                 </b-col>
             </b-row>
         </b-card>
@@ -102,7 +105,7 @@
                     </p>
 
                     <!-- Maps Buttons -->
-                    <div class="gap-2 d-flex flex-wrap">
+                    <div class="gap-2 d-flex flex-wrap print-hide">
                         <b-button variant="primary" href="https://www.google.com/maps/place/Weihburggasse+9"
                             target="_blank">
                             In Google Maps öffnen
@@ -156,6 +159,11 @@ watch(
     (id) => store.fetchBooking(id),
     { immediate: true }
 )
+
+const print = () => {
+    window.print();
+};
+
 </script>
 
 
@@ -285,5 +293,70 @@ watch(
 /* Contact info spacing */
 .contact-info p {
     margin-bottom: 0.5rem;
+}
+
+
+/* --- Print Bestätigung --- */
+@media print {
+
+    /* A4-Format */
+    @page {
+        size: A4;
+        margin: 20mm;
+    }
+
+    body {
+        background: white !important;
+        font-size: 12pt;
+    }
+
+    /* Animationen & Effekte entfernen */
+    * {
+        animation: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+    }
+
+    /* Layout auf volle Breite */
+    .booking-result {
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
+    /* Nicht druckrelevante Elemente ausblenden */
+    .return-btn,
+    button,
+    iframe,
+    .map-container,
+    a[href]:after {
+        display: none !important;
+    }
+
+    /* Karten-Spalten sauber umbrechen */
+    .booking-card,
+    .directions-row {
+        page-break-inside: avoid;
+    }
+
+    /* Bilder druckfreundlich */
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Farben erzwingen */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    p,
+    div {
+        color: #000 !important;
+    }
+
+    .print-hide {
+        display: none !important;
+    }
 }
 </style>
