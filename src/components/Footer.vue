@@ -1,30 +1,3 @@
-<script>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-
-export default {
-  name: 'Footer',
-  setup() {
-    const showFooter = ref(false)
-
-    const handleMouseMove = (e) => {
-      const threshold = 50
-      const windowHeight = window.innerHeight
-      showFooter.value = windowHeight - e.clientY <= threshold
-    }
-
-    onMounted(() => {
-      window.addEventListener('mousemove', handleMouseMove)
-    })
-
-    onBeforeUnmount(() => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    })
-
-    return { showFooter }
-  }
-}
-</script>
-
 <template>
   <footer
     class="modern-footer"
@@ -56,8 +29,36 @@ export default {
   </footer>
 </template>
 
-<style scoped>
 
+<script>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+
+export default {
+  name: 'Footer',
+  setup() {
+    const showFooter = ref(false)
+
+    const handleMouseMove = (e) => {
+      const threshold = 50
+      const windowHeight = window.innerHeight
+      showFooter.value = windowHeight - e.clientY <= threshold
+    }
+
+    onMounted(() => {
+      window.addEventListener('mousemove', handleMouseMove)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('mousemove', handleMouseMove)
+    })
+
+    return { showFooter }
+  }
+}
+</script>
+
+
+<style scoped>
 .modern-footer {
   background-color: rgba(191, 93, 36, 0.4);
   backdrop-filter: blur(10px);
@@ -67,7 +68,7 @@ export default {
   position: fixed;
   bottom: -100px;
   left: 0;
-  padding: 0.35rem 1rem; /* slightly smaller footer height */
+  padding: 0.35rem 1rem;
   font-size: 13px;
   transition: bottom 0.3s ease;
   z-index: 1000;
@@ -77,7 +78,7 @@ export default {
   bottom: 0;
 }
 
-/* NEW — everything in one line */
+/* Display everything in one line */
 .footer-row {
   display: flex;
   align-items: center;
@@ -123,4 +124,17 @@ export default {
 .google:hover i { color: #ff6b57; }
 .whatsapp:hover i { color: #4fff8c; }
 
+/* adjust footer when mobile */
+@media (max-width: 767px) {
+  .follow-label {
+    display: none;
+  }
+
+  .footer-row {
+    gap: 0.5rem;
+  }
+  .modern-footer .big {
+    font-size: 10px;
+  }
+}
 </style>

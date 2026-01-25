@@ -1,12 +1,9 @@
-<script setup>
-</script>
-
 <template>
-  <div class="title-container position-relative text-center">
+  <div class="title-container text-center">
     <img class="title-img img-fluid" src="/images/about/lobby2.jpg" alt="Hotel Lobby" />
 
     <div class="title-text text-white d-flex flex-column align-items-center justify-content-center">
-      <h1 class="title display-5 fw-bold mb-3">
+      <h1 class="title fw-bold mb-3">
         Eleganz seit 1476 – Willkommen im Hotel Vue
       </h1>
       <p class="title-p lead mb-4">
@@ -32,6 +29,13 @@
 .title-container {
   width: 100%;
   overflow: hidden;
+  position: absolute;
+  inset: 0;
+}
+
+.main-default {
+    margin: 0;
+    padding: 0;
 }
 
 .title-img {
@@ -78,5 +82,4 @@
 .btn-secondary{
     background-color: var(--color-secondary);
 }
-
 </style>

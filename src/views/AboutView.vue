@@ -1,10 +1,5 @@
-<script setup>
-import ImageCarousel from '../components/ImageCarousel.vue';
-</script>
-
-
 <template>
-  <b-container fluid class="py-5 mt-4">
+  <b-container class="mt-2 mb-5">
     <b-row class="justify-content-center">
 <b-col cols="12" style="max-width: 900px;">
     <ImageCarousel class="w-100"/>
@@ -32,32 +27,7 @@ Ob Sie auf der Durchreise sind oder einen längeren Aufenthalt planen – bei un
 </template>
 
 
-<style>
-
-p {
-  font-size: clamp(1rem, 1.2vw, 1.2rem); 
-  line-height: 1.6;
-}
-
-.btn-text-fit {
-  width: auto !important;
-  flex: 0 0 auto !important;
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  white-space: nowrap;
-  font-size: 1rem;
-}
-
-@media (max-width:900px) {
-  p {
-    font-size: 0.95rem;
-
-  }
-
-  .btn-text-fit {
-    font-size: 0.95rem;
-    padding: 0.6rem 1.2rem;
-  }
-}
-</style>
+<script setup>
+import ImageCarousel from '../components/ImageCarousel.vue';
+</script>
 

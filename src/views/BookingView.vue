@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid class="my-5 pt-md-4 px-2 px-md-4" style="max-width: 900px;">
+  <b-container fluid class="mt-2 mb-5 px-2 px-md-4" style="max-width: 900px;">
     <!-- Loading -->
     <div v-if="loading" class="text-center">
       <b-spinner label="Loading..." />
@@ -28,8 +28,8 @@
 
             <!-- Details -->
             <b-col cols="12" md="8" class="p-3">
-              <b-card-title>
-                <strong>Zimmer {{ room.roomNumber }} – {{ room.roomName }}</strong>
+              <b-card-title class="display-7 text-gradient">
+                Zimmer {{ room.roomNumber }} – {{ room.roomName }}
               </b-card-title>
 
               <b-card-text class="mt-3">

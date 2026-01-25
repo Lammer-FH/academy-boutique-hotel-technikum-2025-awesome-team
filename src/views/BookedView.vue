@@ -1,11 +1,10 @@
 <template>
-	<b-container v-if="booking" class="my-5 py-5 booking-result">
+	<b-container v-if="booking" class="booking-result mt-2 mb-5">
 		<!-- Header Section -->
 		<div class="text-center mb-5 fade-in">
-			<h1 class="display-4 font-weight-bold mb-3 text-gradient">
+			<h1 class="display-5 font-weight-bold text-gradient">
 				{{ route.query.new ? "Ihre Buchung war erfolgreich!" : "Ihre Buchung" }}
 			</h1>
-
 			<p class="lead text-muted">Vielen Dank! Wir freuen uns, Sie bald begrüßen zu dürfen.</p>
 		</div>
 
@@ -32,9 +31,9 @@
 				<!-- Content -->
 				<b-col cols="12" lg="7" class="p-4 p-lg-5 content-col">
 					<!-- Room Title -->
-					<h2 class="mb-2">{{ booking.room.name }}</h2>
+					<h2 class="mb-2">{{ booking.room.roomName }}</h2>
 					<p class="text-muted mb-4">
-						Zimmer Nr. <b>{{ booking.room.number }}</b> • <b>{{ booking.room.beds }}</b> Bett(er) •
+						Zimmer Nr. <b>{{ booking.room.roomNumber }}</b> • <b>{{ booking.room.beds }}</b> Bett(en) •
 						<b>{{ booking.room.pricePerNight }} €</b>/Nacht
 					</p>
 
@@ -42,11 +41,11 @@
 					<div class="mb-4">
 						<div>
 							<i class="bi bi-arrow-right-circle"></i>
-							<b> Anreise:</b> {{ booking.from }}
+							<b> Anreise:</b> {{store.formatDate( booking.from)}}
 						</div>
 						<div>
 							<i class="bi bi-arrow-left-circle"></i>
-							<b> Abreise:</b> {{ booking.to }}
+							<b> Abreise:</b> {{ store.formatDate(booking.to) }}
 						</div>
 						<div>
 							<i class="bi bi-egg-fried"></i>
@@ -58,12 +57,12 @@
 					<h5 class="mt-4 mb-2">Ausstattung</h5>
 					<div class="d-flex flex-wrap gap-2 mt-2">
 						<small
-							v-for="extra in booking.room.extras.filter(e => e.available)"
+							v-for="extra in store.roomAmenities"
 							:key="extra.name"
 							class="d-flex align-items-center gap-1 text-secondary"
 						>
 							<i :class="extra.icon"></i>
-							{{ extra.name }}
+							{{ extra.label }}
 						</small>
 					</div>
 
@@ -75,7 +74,7 @@
 								<i class="bi bi-person-fill"></i> <b>{{ guest.firstname }} {{ guest.lastname }}</b>
 							</div>
 							<div><i class="bi bi-envelope"></i> {{ guest.email }}</div>
-							<div><i class="bi bi-calendar"></i> Geboren am {{ guest.birthdate }}</div>
+							<div><i class="bi bi-calendar"></i> Geboren am {{ store.formatDate(guest.birthdate) }}</div>
 						</div>
 					</div>
 				</b-col>
@@ -110,12 +109,11 @@
       </p>
 
       <!-- Maps Buttons -->
-        <div class="mb-lg-0 mb-3">
+        <div class="gap-2 d-flex flex-wrap">
   <b-button
     variant="primary"
     href="https://www.google.com/maps/place/Weihburggasse+9"
     target="_blank"
-    class="mx-2 mt-2 mb-lg-0"
   >
     In Google Maps öffnen
   </b-button>
@@ -124,7 +122,6 @@
     variant="primary"
     href="https://maps.apple.com/place?address=Weihburggasse+9"
     target="_blank"
-    class="mx-2 mt-2 mb-lg-0"
   >
     In Apple Maps öffnen
   </b-button>
@@ -168,26 +165,16 @@ const route = useRoute();
 const store = useBookingStore();
 
 const booking = computed(() => store.booking)
-const loading = computed(() => store.loading)
-const error = computed(() => store.error)
 
 watch(
   () => route.params.id,
   (id) => store.fetchBooking(id),
   { immediate: true }
 )
-
 </script>
 
 
 <style scoped>
-/* --- Booking information card styles --- */
-.text-gradient {
-  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary1));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .fade-in {
   animation: fadeIn 0.8s ease;
 }
@@ -231,6 +218,21 @@ watch(
   border-radius: 6px;
   font-size: 0.9rem;
   backdrop-filter: blur(12px);
+
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 767px) {
+  .floating-badge {
+    top: 8px;
+    right: 8px;
+    left: auto;
+    font-size: 0.8rem;
+    max-width: 90%;
+  }
 }
 
 .return-btn {
@@ -247,7 +249,7 @@ watch(
 .map-container {
   border-radius: 12px;
   overflow: hidden;
-  min-height: 300px; /* default for mobile */
+  min-height: 300px;
 }
 
 /* Iframe fills container */
@@ -289,8 +291,8 @@ watch(
 
   .map-container {
     width: 100%;
-    height: 50vh; /* adjust if you want bigger map */
-    margin-top: 1rem; /* gap between buttons and map */
+    height: 50vh;
+    margin-top: 1rem;
   }
 }
 

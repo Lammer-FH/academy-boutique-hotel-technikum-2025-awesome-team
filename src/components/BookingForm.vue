@@ -102,6 +102,7 @@
   </b-form>
 </template>
 
+
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -112,9 +113,7 @@ const store = useBookingStore()
 const auth = useAuthStore()
 const router = useRouter()
 
-/**
- * AUTO-FILL USER DATA AFTER LOGIN / REGISTRATION
- */
+/*AUTO-FILL USER DATA AFTER LOGIN / REGISTRATION */
 onMounted(() => {
   if (auth.isAuthenticated && auth.user) {
     store.firstName = auth.user.firstname
@@ -122,7 +121,6 @@ onMounted(() => {
     store.email = auth.user.email
   }
 })
-
 
 // Modal state
 const showModal = ref(false)

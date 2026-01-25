@@ -1,3 +1,45 @@
+<template>
+  <b-col class="text-end mb-3">
+    <b-button variant="primary" :disabled="!canBook" @click="openModal">
+      Zimmer buchen
+    </b-button>
+  </b-col>
+
+  <div ref="booking-modal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h1 class="display-6 text-gradient">Buchung bestätigen</h1>
+          <button class="btn-close" @click="closeModal" />
+        </div>
+
+        <div class="modal-body">
+            <!-- Guest details-->
+          <p><b>Name:</b> {{ store.firstName }} {{ store.lastName }}</p>
+          <p><b>E-Mail:</b> {{ store.email }}</p>
+          <p><b>Geburtsdatum:</b> {{ store.formatDate(store.dob) }}</p><br>
+<!-- Room details-->
+          <p><b>Zimmer:</b> {{ store.roomNumber }} – {{ store.roomName }}</p>
+                    <p><b>Bett(en):</b> {{ store.beds }}</p>
+          <p><b>Zeitraum:</b> {{ store.formatDate(store.fromDate) }} – {{ store.formatDate(store.toDate) }}</p>
+           <p><b>Frühstück:</b> {{ store.fruehstueck ? 'Ja' : 'Nein' }}</p><br>
+          <p class="fs-5"><b>Gesamtpreis:</b> {{ store.totalPrice }} €</p>
+        </div>
+
+        <div class="modal-footer">
+          <b-button variant="secondary" @click="closeModal">Zurück</b-button>
+          <b-button variant="primary" @click="submitBooking">Bestätigen</b-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <b-modal v-model="showAlert" title="Fehler" hide-footer>
+    <p>{{ alertMessage }}</p>
+    <b-button variant="primary" @click="showAlert = false">OK</b-button>
+  </b-modal>
+</template>
+
 <script setup>
 import { computed, ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
@@ -34,50 +76,3 @@ async function submitBooking() {
   }
 }
 </script>
-
-<template>
-  <b-col class="text-end mt-3">
-    <b-button variant="primary" :disabled="!canBook" @click="openModal">
-      Zimmer buchen
-    </b-button>
-  </b-col>
-
-  <div ref="booking-modal" class="modal fade">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5>Buchung bestätigen</h5>
-          <button class="btn-close" @click="closeModal" />
-        </div>
-
-        <div class="modal-body">
-          <p><b>Name:</b> {{ store.firstName }} {{ store.lastName }}</p>
-          <p><b>E-Mail:</b> {{ store.email }}</p>
-          <p></p>
-          <p><b>Zeitraum:</b> {{ store.fromDate }} – {{ store.toDate }}</p>
-          <p></p>
-          <p>
-          <b>Zimmer:</b>
-          Zimmer {{ store.roomNumber }} – {{ store.roomName }}
-          </p>
-          <p>
-          <b>Bett(en):</b> {{ store.beds }}
-          </p>
-          <p class="fs-5">
-          <b>Gesamtpreis:</b> {{ store.totalPrice }} €
-          </p>
-        </div>
-
-        <div class="modal-footer">
-          <b-button variant="secondary" @click="closeModal">Zurück</b-button>
-          <b-button variant="primary" @click="submitBooking">Bestätigen</b-button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <b-modal v-model="showAlert" title="Fehler" hide-footer>
-    <p>{{ alertMessage }}</p>
-    <b-button variant="primary" @click="showAlert = false">OK</b-button>
-  </b-modal>
-</template>

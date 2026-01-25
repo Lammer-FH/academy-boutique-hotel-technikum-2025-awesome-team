@@ -1,45 +1,3 @@
-<script>
-import { ref, computed } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import AuthModal from './AuthModal.vue'
-
-export default {
-  name: 'Header',
-  components: { AuthModal },
-  setup() {
-
-    const auth = useAuthStore()
-    const showAuthModal = ref(false)
-
-    const displayName = computed(() => {
-      if (!auth.user) return ''
-      return `${auth.user.firstname ?? ''} ${auth.user.lastname ?? ''}`.trim()
-    })
-
-    const openAuthModal = () => {
-      showAuthModal.value = true
-    }
-
-    const closeAuthModal = () => {
-      showAuthModal.value = false
-    }
-
-    const logout = () => {
-      auth.logout()
-    }
-
-    return {
-      auth,
-      showAuthModal,
-      openAuthModal,
-      closeAuthModal,
-      displayName,
-      logout
-    }
-  }
-}
-</script>
-
 <template>
   <header>
     <b-navbar toggleable="lg" type="dark" class="modern-navbar">
@@ -99,11 +57,54 @@ export default {
   </header>
 </template>
 
+
+<script>
+import { ref, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import AuthModal from './AuthModal.vue'
+
+export default {
+  name: 'Header',
+  components: { AuthModal },
+  setup() {
+
+    const auth = useAuthStore()
+    const showAuthModal = ref(false)
+
+    const displayName = computed(() => {
+      if (!auth.user) return ''
+      return `${auth.user.firstname ?? ''} ${auth.user.lastname ?? ''}`.trim()
+    })
+
+    const openAuthModal = () => {
+      showAuthModal.value = true
+    }
+
+    const closeAuthModal = () => {
+      showAuthModal.value = false
+    }
+
+    const logout = () => {
+      auth.logout()
+    }
+
+    return {
+      auth,
+      showAuthModal,
+      openAuthModal,
+      closeAuthModal,
+      displayName,
+      logout
+    }
+  }
+}
+</script>
+
+
 <style scoped>
-/* ⚠️ NICHT VERÄNDERT */
 header {
   width: 100%;
-  position: fixed;
+  position: sticky;
   top: 0;
   z-index: 1000;
 }
