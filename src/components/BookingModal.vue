@@ -1,5 +1,5 @@
 <template>
-  <b-col class="text-end">
+  <b-col class="text-end mb-3">
     <b-button variant="primary" :disabled="!canBook" @click="openModal">
       Zimmer buchen
     </b-button>
